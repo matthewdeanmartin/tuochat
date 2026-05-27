@@ -40,7 +40,6 @@ def command_from_args(args: argparse.Namespace):
     from tuochat.cli.command_models import (  # noqa: E402
         ArchiveConversationCommand,
         AuthCommand,
-        OpenRouterCommand,
         BagitCheckCommand,
         BagitUpdateCommand,
         ChatCommand,
@@ -66,6 +65,7 @@ def command_from_args(args: argparse.Namespace):
         ListTemplatesCommand,
         ObservabilityCommand,
         OpenConversationCommand,
+        OpenRouterCommand,
         ResumeCommand,
         SearchCommand,
         SelfcheckCommand,

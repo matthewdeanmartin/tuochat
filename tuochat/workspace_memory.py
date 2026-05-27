@@ -44,8 +44,7 @@ COMPACT_PROMPT = (
     "Put the summary inside a fenced code block like this:\n\n"
     "```COMPACT\n"
     "Summary here.\n"
-    "```\n\n"
-    + NESTED_MARKDOWN_FENCE_GUIDANCE
+    "```\n\n" + NESTED_MARKDOWN_FENCE_GUIDANCE
 )
 
 TODO_PROMPT = (

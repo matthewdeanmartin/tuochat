@@ -22,7 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Markdown extraction from markdown now will use an ad hoc escaping convention.
 
-
 ## [0.8.0] - 2026-04-13
 
 ### Added

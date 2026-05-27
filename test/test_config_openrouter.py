@@ -7,11 +7,11 @@ import pytest
 from tuochat.config import (
     DEFAULT_OPENROUTER_BASE_URL,
     OpenRouterConfig,
+    TuochatConfig,
     apply_toml,
     load_config,
     render_config,
     save_config,
-    TuochatConfig,
 )
 
 

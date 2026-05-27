@@ -4,10 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from tuochat.cli.session import (
-    build_openrouter_provider,
-    conversation_history_for_openrouter,
-)
+from tuochat.cli.session import build_openrouter_provider, conversation_history_for_openrouter
 from tuochat.config import TuochatConfig
 from tuochat.models import Conversation
 from tuochat.provider.openrouter import OpenRouterAPIError

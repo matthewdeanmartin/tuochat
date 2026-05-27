@@ -33,8 +33,7 @@ def import_openrouter_sdk() -> Any:
         import openrouter  # noqa: PLC0415
     except ImportError as exc:
         raise OpenRouterUnavailableError(
-            "The 'openrouter' package is not installed. Install the extra with: "
-            "pip install 'tuochat[openrouter]'"
+            "The 'openrouter' package is not installed. Install the extra with: " "pip install 'tuochat[openrouter]'"
         ) from exc
     return openrouter
 
@@ -193,7 +192,11 @@ class OpenRouterProvider:
             for msg in history:
                 role = msg.get("role")
                 message_content = msg.get("content")
-                if isinstance(role, str) and role in {"user", "assistant", "system"} and isinstance(message_content, str):
+                if (
+                    isinstance(role, str)
+                    and role in {"user", "assistant", "system"}
+                    and isinstance(message_content, str)
+                ):
                     messages.append({"role": role, "content": message_content})
         messages.append({"role": "user", "content": question})
         return messages

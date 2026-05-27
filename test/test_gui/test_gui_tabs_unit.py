@@ -180,7 +180,9 @@ def test_gitlab_tab_fetch_data_populates_and_handles_errors(monkeypatch, tk_root
     monkeypatch.setattr(tab.parent, "after", lambda delay, callback: callback())
 
     class FakeClient:
-        def __init__(self, host: str, token: str, token_type: str, user_agent: str | None = None) -> None:  # noqa: ARG002
+        def __init__(
+            self, host: str, token: str, token_type: str, user_agent: str | None = None
+        ) -> None:  # noqa: ARG002
             pass
 
         def list_mrs(self, project_id):
@@ -198,7 +200,9 @@ def test_gitlab_tab_fetch_data_populates_and_handles_errors(monkeypatch, tk_root
     assert "Loaded: 1 open MRs, 1 open issues, 1 recent pipelines" in tab.status_var.get()
 
     class BrokenClient:
-        def __init__(self, host: str, token: str, token_type: str, user_agent: str | None = None) -> None:  # noqa: ARG002
+        def __init__(
+            self, host: str, token: str, token_type: str, user_agent: str | None = None
+        ) -> None:  # noqa: ARG002
             raise RuntimeError("boom")
 
     monkeypatch.setattr("tuochat.gitlab_client.GitLabMetaClient", BrokenClient)

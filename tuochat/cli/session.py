@@ -408,8 +408,7 @@ def build_openrouter_provider(cfg: TuochatConfig, *, model_override: str | None 
     """Construct an OpenRouter provider from the active config."""
     if not cfg.openrouter.api_key:
         raise OpenRouterAPIError(
-            "OpenRouter API key is not configured. Set OPENROUTER_API_KEY or run "
-            "`tuochat openrouter login`."
+            "OpenRouter API key is not configured. Set OPENROUTER_API_KEY or run " "`tuochat openrouter login`."
         )
     models: list[str]
     if model_override:
@@ -417,9 +416,7 @@ def build_openrouter_provider(cfg: TuochatConfig, *, model_override: str | None 
     else:
         models = cfg.openrouter.effective_models()
     if not models:
-        raise OpenRouterAPIError(
-            "No OpenRouter model configured. Set OPENROUTER_MODEL or OPENROUTER_MODELS."
-        )
+        raise OpenRouterAPIError("No OpenRouter model configured. Set OPENROUTER_MODEL or OPENROUTER_MODELS.")
     return OpenRouterProvider(
         api_key=cfg.openrouter.api_key,
         models=models,
@@ -999,9 +996,7 @@ def send_chat_turn(state: ReplState, user_input: str, *, original_handler=None, 
     if state.active_model == "openrouter":
         started_at = time.perf_counter()
         try:
-            openrouter_provider = build_openrouter_provider(
-                state.cfg, model_override=state.active_openrouter_model
-            )
+            openrouter_provider = build_openrouter_provider(state.cfg, model_override=state.active_openrouter_model)
         except (OpenRouterAPIError, OpenRouterUnavailableError, ValueError) as exc:
             print(f"\n[OpenRouter unavailable: {exc}]", file=sys.stderr)
             return
@@ -1053,9 +1048,7 @@ def send_chat_turn(state: ReplState, user_input: str, *, original_handler=None, 
             message_extras_json = json_dumps({"template": state.pending_template_metadata}, ensure_ascii=True)
 
         user_msg = conv.add_message(Role.USER.value, outbound_input, extras_json=message_extras_json)
-        assistant_msg = conv.add_message(
-            Role.ASSISTANT.value, full_response, status=MessageStatus.COMPLETE.value
-        )
+        assistant_msg = conv.add_message(Role.ASSISTANT.value, full_response, status=MessageStatus.COMPLETE.value)
         if conv.title is None:
             conv.title = conv.auto_title(user_input)
         state.last_user_input = user_input
@@ -1074,9 +1067,7 @@ def send_chat_turn(state: ReplState, user_input: str, *, original_handler=None, 
                 model=openrouter_provider.last_model_used or "openrouter",
             )
         )
-        _, md_path, extracted = sync_conversation_artifacts(
-            state.cfg, conv, classification=state.active_classification
-        )
+        _, md_path, extracted = sync_conversation_artifacts(state.cfg, conv, classification=state.active_classification)
         if md_path is not None:
             update_saved_conversation_artifacts(state, md_path, extracted)
             print_virtual_file_notice(state)

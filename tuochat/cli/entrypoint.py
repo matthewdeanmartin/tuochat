@@ -244,9 +244,7 @@ def build_parser() -> SmartParser:
         sub.set_defaults(command_key="auth", auth_action=action)
     auth_parser.set_defaults(command_key="auth", auth_action="login")
 
-    openrouter_parser = subparsers.add_parser(
-        "openrouter", help="Manage the OpenRouter API key (alternative to Duo)"
-    )
+    openrouter_parser = subparsers.add_parser("openrouter", help="Manage the OpenRouter API key (alternative to Duo)")
     openrouter_subparsers = openrouter_parser.add_subparsers(dest="openrouter_action")
     for action, helptext in (
         ("login", "Prompt for an OpenRouter API key and store it in keyring or config"),

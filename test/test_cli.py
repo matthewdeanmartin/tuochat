@@ -31,8 +31,8 @@ from tuochat.context.recipes import Recipe, RecipeMatch
 from tuochat.models import Conversation, Message, Role
 from tuochat.persistence.archive import check_archive_bagit_status, extract_code_files, refresh_archive_bagit_metadata
 from tuochat.persistence.store import ConversationStore, NullConversationStore
-from tuochat.provider.eliza import ElizaProvider
 from tuochat.provider.duo import DuoChatModelSupport, DuoProvider
+from tuochat.provider.eliza import ElizaProvider
 from tuochat.security.masking import display_text
 from tuochat.serialization import json_dumps, json_loads
 

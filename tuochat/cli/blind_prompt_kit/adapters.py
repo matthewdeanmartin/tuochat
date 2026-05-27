@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Protocol
 

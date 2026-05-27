@@ -504,7 +504,9 @@ def restore_markdown_inner_fences(content: str) -> str:
 def should_restore_markdown_inner_fences(path: Path, *, language: str) -> bool:
     """Return whether extracted content should restore markdown inner fences."""
     suffixes = [suffix.lower() for suffix in path.suffixes]
-    effective_suffix = suffixes[-2] if suffixes and suffixes[-1] == ".check" and len(suffixes) >= 2 else path.suffix.lower()
+    effective_suffix = (
+        suffixes[-2] if suffixes and suffixes[-1] == ".check" and len(suffixes) >= 2 else path.suffix.lower()
+    )
     return effective_suffix in MARKDOWN_SUFFIXES or language.lower() == "markdown"
 
 
@@ -832,7 +834,9 @@ def extract_code_files(
                 if should_restore_markdown_inner_fences(target_template, language=language)
                 else file_content
             )
-            rendered_content = apply_generated_file_header(target_template, normalized_content, cfg, header_date=header_date)
+            rendered_content = apply_generated_file_header(
+                target_template, normalized_content, cfg, header_date=header_date
+            )
             archive_target = unique_path(conv_dir / candidate_rel, content=rendered_content)
             target = archive_target
             if write_here_target is not None:

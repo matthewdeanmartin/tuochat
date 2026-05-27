@@ -8,12 +8,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from tuochat.config import default_gitlab_user_agent
-from tuochat.provider.duo import (
-    DUO_CHAT_MODEL_FIELD_CANDIDATES,
-    ChatDiagnostics,
-    DuoAPIError,
-    DuoProvider,
-)
+from tuochat.provider.duo import DUO_CHAT_MODEL_FIELD_CANDIDATES, ChatDiagnostics, DuoAPIError, DuoProvider
 from tuochat.serialization import json_dumps_bytes
 
 

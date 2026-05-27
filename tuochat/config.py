@@ -13,8 +13,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urlparse
 
-from tuochat.__about__ import __title__, __version__
 from tuochat import winlog
+from tuochat.__about__ import __title__, __version__
 from tuochat.serialization import toml_load
 
 logger = logging.getLogger("tuochat.config")
@@ -555,9 +555,7 @@ def load_config(config_path: str | None = None) -> TuochatConfig:
 
     env_openrouter_models = os.environ.get("OPENROUTER_MODELS")
     if env_openrouter_models:
-        cfg.openrouter.models = [
-            item.strip() for item in env_openrouter_models.split(",") if item.strip()
-        ]
+        cfg.openrouter.models = [item.strip() for item in env_openrouter_models.split(",") if item.strip()]
 
     env_openrouter_rotate = os.environ.get("OPENROUTER_ROTATE_MODELS")
     if env_openrouter_rotate is not None:

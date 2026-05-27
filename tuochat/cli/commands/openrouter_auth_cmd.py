@@ -12,11 +12,7 @@ from typing import TYPE_CHECKING
 from tuochat.cli.prompts import prompt_nonempty
 from tuochat.config import save_config
 from tuochat.security.credentials import keyring_available
-from tuochat.security.openrouter_secret import (
-    delete_api_key,
-    load_api_key,
-    save_api_key,
-)
+from tuochat.security.openrouter_secret import delete_api_key, load_api_key, save_api_key
 
 if TYPE_CHECKING:
     from tuochat.config import TuochatConfig

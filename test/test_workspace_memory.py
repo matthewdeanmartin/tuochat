@@ -1,12 +1,7 @@
 from __future__ import annotations
 
 from tuochat.discovery.shared import bundled_custom_instructions_dir
-from tuochat.workspace_memory import (
-    COMPACT_PROMPT,
-    MEMORY_PROMPT,
-    TODO_PROMPT,
-    extract_fence_content,
-)
+from tuochat.workspace_memory import COMPACT_PROMPT, MEMORY_PROMPT, TODO_PROMPT, extract_fence_content
 
 
 def test_workspace_memory_prompts_require_tilde_fences_for_nested_markdown_examples():
