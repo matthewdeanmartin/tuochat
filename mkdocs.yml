@@ -1,0 +1,48 @@
+site_name: tuochat
+site_description: A minimal GitLab Duo Chat client
+site_url: https://tuochat.readthedocs.io/en/latest/
+repo_url: https://gitlab.com/matthewdeanmartin/tuochat
+repo_name: matthewdeanmartin/tuochat
+
+theme:
+  name: readthedocs
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [ "." ]
+          options:
+            show_source: false
+            show_root_heading: true
+            members_order: source
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Quick Start: quickstart.md
+  - UI Options:
+      - Terminal Chat: terminal-chat.md
+      - GUI: gui.md
+  - Basic Features:
+      - Slash Commands: slash-commands.md
+      - Attaching Files: attaching-files.md
+      - Files and Data: files-and-data.md
+      - Searching Conversations: search.md
+      - Classification: classification.md
+  - Advanced:
+      - Configuration: configuration.md
+      - Code Interpreter: code-interpreter.md
+      - Advanced CLI: advanced-cli.md
+  - Safety and Compliance:
+      - Accessibility: accessibility.md
+      - Security: security.md
+      - Dependency Provenance: dependency-provenance.md
+  - API Reference:
+      - Reference: api-reference.md
+  - Contributing:
+      - Context internals: SERVER_VS_CLIENT.md
+      - Contributing Guide: contributing/CONTRIBUTING.md
+      - API Streaming Learnings: contributing/API_STREAMING_LEARNINGS.md
+      - Tkinter Learnings: contributing/TKINTER_LEARNINGS.md

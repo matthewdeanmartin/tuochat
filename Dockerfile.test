@@ -1,0 +1,14 @@
+FROM python:3.14-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends tk-dev && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir uv
+
+WORKDIR /app
+
+COPY . .
+
+# Install all extras except Windows-only deps (pywin32 is skipped on Linux automatically)
+RUN uv pip install --system --no-cache-dir ".[all]" pytest pytest-cov pytest-xdist pytest-benchmark hypothesis pytest-timeout
+
+CMD ["pytest", "test", "-q", "-n", "5", "--dist=loadfile", "--cov=tuochat", "--cov-fail-under=35", "-p", "no:benchmark", "--timeout=15", "--session-timeout=600"]
