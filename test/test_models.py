@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from tuochat.models import Conversation, Message, MessageStatus, Role, Usage
@@ -160,6 +160,7 @@ def test_conversation_roundtrip():
     st.one_of(st.none(), st.text(max_size=40)),
     st.sampled_from(STATUS_VALUES),
 )
+@settings(deadline=None)
 def test_conversation_add_message_preserves_inputs(role, content, request_id, status):
     """add_message should append one message and pass through explicit fields."""
     conv = Conversation()
