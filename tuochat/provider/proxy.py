@@ -299,8 +299,8 @@ class ProxyProbe:
 
 
 # Module-level singleton so the probe runs at most once per process
-session_probe: ProxyProbe | None = None
-session_result: ProbeResult | None = None
+SESSION_PROBE: ProxyProbe | None = None
+SESSION_RESULT: ProbeResult | None = None
 
 
 def get_session_proxy(gitlab_host: str, *, force: bool = False) -> ProbeResult:
@@ -309,16 +309,16 @@ def get_session_proxy(gitlab_host: str, *, force: bool = False) -> ProbeResult:
     Subsequent calls with any host return the cached result — the assumption
     is that all traffic goes to a single GitLab instance.
     """
-    global session_probe, session_result  # noqa: PLW0603
-    if session_result is not None and not force:
-        return session_result
-    session_probe = ProxyProbe(gitlab_host)
-    session_result = session_probe.resolve()
-    return session_result
+    global SESSION_PROBE, SESSION_RESULT  # noqa: PLW0603
+    if SESSION_RESULT is not None and not force:
+        return SESSION_RESULT
+    SESSION_PROBE = ProxyProbe(gitlab_host)
+    SESSION_RESULT = SESSION_PROBE.resolve()
+    return SESSION_RESULT
 
 
 def clear_session_proxy() -> None:
     """Reset the session cache (used in tests)."""
-    global session_probe, session_result  # noqa: PLW0603
-    session_probe = None
-    session_result = None
+    global SESSION_PROBE, SESSION_RESULT  # noqa: PLW0603
+    SESSION_PROBE = None
+    SESSION_RESULT = None

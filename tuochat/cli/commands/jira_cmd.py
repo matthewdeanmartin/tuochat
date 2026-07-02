@@ -77,7 +77,7 @@ def clear_session_cache() -> None:
 # Top-level dispatcher
 
 
-def handle_jira_command(command: str, argument: str, state: ReplState) -> None:
+def handle_jira_command(_command: str, argument: str, state: ReplState) -> None:
     """Dispatch /jira sub-commands."""
     arg = argument.strip()
     parts = arg.split(maxsplit=1)
@@ -148,7 +148,7 @@ def handle_auth(state: ReplState) -> None:
 # /jira clear
 
 
-def handle_clear(state: ReplState) -> None:
+def handle_clear(_state: ReplState) -> None:
     """Clear session caches."""
     clear_session_cache()
     print("Jira session cache cleared.")
@@ -240,7 +240,7 @@ def pick_project(client, state: ReplState) -> str | None:
     return None
 
 
-def pick_issues(client, project_key: str, state: ReplState) -> list[str]:
+def pick_issues(client, project_key: str, _state: ReplState) -> list[str]:
     """Prompt the user to pick one or more issues; return a list of issue keys."""
     print(f"Fetching issues for {project_key}…")
     try:

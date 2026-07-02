@@ -141,7 +141,7 @@ class CallbackHandler(http.server.BaseHTTPRequestHandler):
         """Silence default stderr access logs."""
         logger.debug("oauth callback: " + format, *args)
 
-    def do_GET(self) -> None:  # noqa: N802 - stdlib signature
+    def do_GET(self) -> None:  # noqa: N802 - stdlib signature  # pylint: disable=invalid-name
         """Capture query params and return a friendly success/failure page."""
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path != self.expected_path:

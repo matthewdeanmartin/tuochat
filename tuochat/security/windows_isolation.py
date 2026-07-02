@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 # Availability gate
 # ---------------------------------------------------------------------------
 
-AVAILABLE: bool = False
+windows_isolation_available: bool = False
 """True when pywin32 is importable and we are on Windows."""
 
 if sys.platform == "win32":
@@ -43,15 +43,17 @@ if sys.platform == "win32":
         import win32process  # noqa: F401# pylint: disable=unused-import
         import win32security  # noqa: F401# pylint: disable=unused-import
 
-        AVAILABLE = True
+        windows_isolation_available = True
     except ImportError:
         pass
 
-if not AVAILABLE:
+if not windows_isolation_available:
     logger.debug(
         "windows_isolation: pywin32 not available (platform=%s) -- all isolation functions will be no-ops",
         sys.platform,
     )
+
+AVAILABLE = windows_isolation_available
 
 
 # ---------------------------------------------------------------------------
@@ -81,7 +83,7 @@ class IsolationResult:
 
 
 # ---------------------------------------------------------------------------
-# Internal helpers (only called when AVAILABLE is True)
+# Internal helpers (only called when windows_isolation_available is True)
 # ---------------------------------------------------------------------------
 
 
@@ -126,7 +128,7 @@ def create_restricted_token():  # type: ignore[no-untyped-def]
     import win32con  # noqa: F811
     import win32security  # noqa: F811
 
-    DISABLE_MAX_PRIVILEGE = getattr(win32security, "DISABLE_MAX_PRIVILEGE", 0x1)
+    disable_max_privilege = getattr(win32security, "DISABLE_MAX_PRIVILEGE", 0x1)
 
     process_handle = win32api.GetCurrentProcess()  # type: ignore[attr-defined]
     token = win32security.OpenProcessToken(
@@ -139,7 +141,7 @@ def create_restricted_token():  # type: ignore[no-untyped-def]
     )
     restricted = win32security.CreateRestrictedToken(
         token,
-        DISABLE_MAX_PRIVILEGE,
+        disable_max_privilege,
         (),  # SIDs to disable
         (),  # privileges to delete
         (),  # restricting SIDs
@@ -221,7 +223,7 @@ def apply_isolation(
     """
     result = IsolationResult()
 
-    if not AVAILABLE:
+    if not windows_isolation_available:
         result.reason_skipped = "pywin32 not available"
         logger.debug("apply_isolation: skipped -- %s", result.reason_skipped)
         return result
@@ -316,7 +318,7 @@ def spawn_isolated(
     Returns a :class:`ChildHandle` on success, or ``None`` if pywin32 is
     unavailable.
     """
-    if not AVAILABLE:
+    if not windows_isolation_available:
         logger.debug("spawn_isolated: pywin32 not available, returning None")
         return None
 
@@ -418,6 +420,6 @@ def is_isolated() -> bool:
     Checks for a Job Object with KILL_ON_JOB_CLOSE.  Returns False when
     pywin32 is not available (non-Windows or not installed).
     """
-    if not AVAILABLE:
+    if not windows_isolation_available:
         return False
     return already_in_sandboxed_job()

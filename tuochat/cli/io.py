@@ -127,9 +127,9 @@ class PromptToolkitBackend:
         from prompt_toolkit import PromptSession  # type: ignore[import-not-found]
         from prompt_toolkit.history import FileHistory, InMemoryHistory  # type: ignore[import-not-found]
 
-        self.PromptSession = PromptSession
-        self.FileHistory = FileHistory
-        self.InMemoryHistory = InMemoryHistory
+        self.prompt_session_class = PromptSession
+        self.file_history_class = FileHistory
+        self.in_memory_history_class = InMemoryHistory
         self.session: Any = None
         self.multiline_session: Any = None
 
@@ -152,7 +152,7 @@ class PromptToolkitBackend:
         no_write = getattr(cfg, "no_write", False) if cfg is not None else False
         history: Any
         if no_write:
-            history = self.InMemoryHistory()
+            history = self.in_memory_history_class()
         else:
             from tuochat.config import config_dir
 
@@ -160,11 +160,11 @@ class PromptToolkitBackend:
             try:
                 history_file.parent.mkdir(parents=True, exist_ok=True)
             except OSError:
-                history = self.InMemoryHistory()
+                history = self.in_memory_history_class()
             else:
-                history = self.FileHistory(str(history_file))
+                history = self.file_history_class(str(history_file))
 
-        self.session = self.PromptSession(
+        self.session = self.prompt_session_class(
             history=history,
             completer=SlashCompleter(),
             complete_while_typing=False,
@@ -197,7 +197,7 @@ class PromptToolkitBackend:
             else:
                 raise EOFError
 
-        self.multiline_session = self.PromptSession(
+        self.multiline_session = self.prompt_session_class(
             history=history,
             completer=SlashCompleter(),
             complete_while_typing=False,
@@ -221,7 +221,7 @@ class PromptToolkitBackend:
 
 
 # Singleton backend, selected lazily on first configure call.
-active_backend: InputBackend | None = None
+ACTIVE_BACKEND: InputBackend | None = None
 
 
 def make_backend() -> InputBackend:
@@ -233,15 +233,15 @@ def make_backend() -> InputBackend:
 
 def get_backend() -> InputBackend:
     """Return the active backend (may be unconfigured until configure_interactive_io is called)."""
-    global active_backend  # noqa: PLW0603
-    if active_backend is None:
-        active_backend = make_backend()
-    return active_backend
+    global ACTIVE_BACKEND  # noqa: PLW0603
+    if ACTIVE_BACKEND is None:
+        ACTIVE_BACKEND = make_backend()
+    return ACTIVE_BACKEND
 
 
 def configure_interactive_io(cfg: Any = None) -> None:
     """Initialise the active backend (history, completion).  Call once at CLI startup."""
-    global active_backend  # noqa: PLW0603
+    global ACTIVE_BACKEND  # noqa: PLW0603
     backend = get_backend()
     try:
         backend.configure(cfg)
@@ -249,14 +249,14 @@ def configure_interactive_io(cfg: Any = None) -> None:
         # Terminal init failed (e.g. prompt-toolkit on a non-console Windows terminal).
         # Fall back to the readline backend and configure that instead.
         if not isinstance(backend, ReadlineBackend):
-            active_backend = ReadlineBackend()
-            active_backend.configure(cfg)
+            ACTIVE_BACKEND = ReadlineBackend()
+            ACTIVE_BACKEND.configure(cfg)
 
 
 def shutdown_interactive_io() -> None:
     """Flush history and tear down the active backend.  Call once at CLI shutdown."""
-    if active_backend is not None:
-        active_backend.shutdown()
+    if ACTIVE_BACKEND is not None:
+        ACTIVE_BACKEND.shutdown()
 
 
 # ---------------------------------------------------------------------------

@@ -14,6 +14,29 @@ from .pagination import Pager
 ValueT = TypeVar("ValueT")
 
 
+def make_status_snapshot(
+    component: ChoiceInput[ValueT],
+    filtered: list[Choice[ValueT] | Choice[str]],
+    pager: Pager[Choice[ValueT] | Choice[str]],
+) -> callable:
+    """Bind the current filtered list and pager for command help callbacks."""
+    def status_snapshot() -> str:
+        return component.status_text(filtered, pager)
+
+    return status_snapshot
+
+
+def make_details_snapshot(
+    component: ChoiceInput[ValueT],
+    pager: Pager[Choice[ValueT] | Choice[str]],
+) -> callable:
+    """Bind the current pager for command detail callbacks."""
+    def details_snapshot() -> str:
+        return component.page_text(pager.current())
+
+    return details_snapshot
+
+
 def coerce_choices(options: Sequence[Choice[ValueT] | str]) -> list[Choice[ValueT] | Choice[str]]:
     """Normalize raw strings into Choice objects."""
     result: list[Choice[ValueT] | Choice[str]] = []
@@ -61,11 +84,8 @@ class ChoiceInput(Generic[ValueT]):
             raw = context.io.prompt(context.prompt_token)
             text, command = context.parse_raw_input(raw)
 
-            def status_snapshot(filtered_snapshot=filtered, pager_snapshot=pager) -> str:
-                return self.status_text(filtered_snapshot, pager_snapshot)
-
-            def details_snapshot(pager_snapshot=pager) -> str:
-                return self.page_text(pager_snapshot.current())
+            status_snapshot = make_status_snapshot(self, filtered, pager)
+            details_snapshot = make_details_snapshot(self, pager)
 
             if command is not None:
                 if context.apply_common_command(

@@ -15,6 +15,17 @@ from .models import FilePick, TreeNode
 ValueT = TypeVar("ValueT")
 
 
+def make_node_snapshot(
+    navigator: TreeNavigator[ValueT],
+    stack_snapshot: list[TreeNode[ValueT]],
+) -> callable:
+    """Bind a tree stack snapshot for help callbacks."""
+    def describe_snapshot() -> str:
+        return navigator.describe_node(stack_snapshot)
+
+    return describe_snapshot
+
+
 @dataclass
 class TreeNavigator(Generic[ValueT]):
     """Navigate a simple tree."""
@@ -33,8 +44,7 @@ class TreeNavigator(Generic[ValueT]):
             if command is not None:
                 snapshot = list(stack)
 
-                def describe_snapshot(snapshot: list[TreeNode[ValueT]] = snapshot) -> str:
-                    return self.describe_node(snapshot)
+                describe_snapshot = make_node_snapshot(self, snapshot)
 
                 try:
                     if context.apply_common_command(

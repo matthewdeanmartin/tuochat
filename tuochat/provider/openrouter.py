@@ -209,7 +209,7 @@ class OpenRouterProvider:
     def chat(
         self,
         question: str,
-        resource_id: str | None = None,  # noqa: ARG002 — accepted for signature parity
+        _resource_id: str | None = None,  # noqa: ARG002 — accepted for signature parity
         streaming: bool = True,
         cancel: Callable[[], bool] | None = None,
         additional_context: list[dict[str, Any]] | None = None,

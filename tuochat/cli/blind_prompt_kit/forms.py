@@ -47,11 +47,11 @@ class SequentialForm:
         index = 0
         while True:
             while index < len(self.fields):
-                field = self.fields[index]
-                label = field.label or field.name.replace("_", " ").title()
+                form_field = self.fields[index]
+                label = form_field.label or form_field.name.replace("_", " ").title()
                 context.say(f"{index + 1} of {len(self.fields)}. {label}")
                 try:
-                    values[field.name] = field.component.run(context)
+                    values[form_field.name] = form_field.component.run(context)
                 except StepBack:
                     if index == 0:
                         context.fail("Already at the first field.")
@@ -59,10 +59,10 @@ class SequentialForm:
                     index -= 1
                     continue
                 except StepSkip:
-                    if not field.optional:
+                    if not form_field.optional:
                         context.fail("This field cannot be blank.")
                         continue
-                    values[field.name] = None
+                    values[form_field.name] = None
                 index += 1
             if not self.confirm:
                 return values
@@ -134,8 +134,8 @@ class NonlinearForm:
                     if target is None:
                         context.fail("Choose a listed field.")
                         continue
-                    field = self.fields[target]
-                    values[field.name] = field.component.run(context)
+                    form_field = self.fields[target]
+                    values[form_field.name] = form_field.component.run(context)
                     continue
             if text.strip().lower() == "done":
                 return values
@@ -143,8 +143,8 @@ class NonlinearForm:
             if target is None:
                 context.fail("Say a field number, field name, summary, or done.")
                 continue
-            field = self.fields[target]
-            values[field.name] = field.component.run(context)
+            form_field = self.fields[target]
+            values[form_field.name] = form_field.component.run(context)
 
     def resolve_field(self, token: str) -> int | None:
         """Resolve a field by number or name."""

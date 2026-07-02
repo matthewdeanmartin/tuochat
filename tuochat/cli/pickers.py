@@ -167,6 +167,7 @@ def pick_from_list_blind(
     large lists prompt the user to type part of a name to filter first.
     All size-adaptive behaviour is handled by ChoiceInput.announce_start.
     """
+    _ = prompt_text
     choices: list[Choice[T]] = [Choice(label=label, value=value) for label, value in items]
     component: ChoiceInput[T] = ChoiceInput(prompt=heading, options=choices)
     context = InteractionContext()
@@ -269,7 +270,8 @@ def pick_prefilter_then_page(
 
 
 ASK_ONE_HELP = (
-    "Commands: Enter or 'y' to select, 'n' next, 'p' prev, " "'[text]' to filter (use square brackets), 'q' to cancel"
+    "Commands: Enter or 'y' to select, 'n' next, 'p' prev, "
+    "'[text]' to filter (use square brackets), 'q' to cancel"
 )
 
 

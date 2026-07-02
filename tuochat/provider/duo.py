@@ -522,9 +522,9 @@ class DuoProvider:
             # Use a short socket timeout so we can poll the cancel callback
             # between reads.  This lets Ctrl+C break out promptly even on
             # Windows where signals don't interrupt blocking socket calls.
-            CANCEL_POLL_INTERVAL = 0.3  # seconds
+            cancel_poll_interval = 0.3  # seconds
             if cancel is not None:
-                ws.set_recv_timeout(CANCEL_POLL_INTERVAL)
+                ws.set_recv_timeout(cancel_poll_interval)
 
             accumulated = ""
             next_expected = 1  # next chunkId we want to process

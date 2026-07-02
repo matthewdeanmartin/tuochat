@@ -71,16 +71,16 @@ win32evtlog: Any | None = None
 win32evtlogutil: Any | None = None
 
 # Cached availability flag; set once at import time.
-WIN32_AVAILABLE: bool = sys.platform == "win32"
-if WIN32_AVAILABLE:
+win32_available: bool = sys.platform == "win32"
+if win32_available:
     try:
-        import win32evtlog as _win32evtlog_mod
-        import win32evtlogutil as _win32evtlogutil_mod
+        import win32evtlog as win32evtlog_mod
+        import win32evtlogutil as win32evtlogutil_mod
 
-        win32evtlog = _win32evtlog_mod
-        win32evtlogutil = _win32evtlogutil_mod
+        win32evtlog = win32evtlog_mod
+        win32evtlogutil = win32evtlogutil_mod
     except ImportError:
-        WIN32_AVAILABLE = False
+        win32_available = False
 
 
 def evtype(level: int) -> int:
@@ -100,7 +100,7 @@ def try_register_source() -> bool:
     Requires elevated privileges.  Returns True on success, False if
     registration was skipped (no admin rights) or pywin32 is absent.
     """
-    if not WIN32_AVAILABLE:
+    if not win32_available:
         return False
     if win32evtlogutil is None:
         return False
@@ -130,7 +130,7 @@ def report_event(
         level: stdlib logging level used to map to EVENTLOG_{INFO,WARNING,ERROR}_TYPE.
         strings: Additional insertion strings appended after *message*.
     """
-    if not WIN32_AVAILABLE:
+    if not win32_available:
         return
     if win32evtlogutil is None:
         return
@@ -171,7 +171,7 @@ class WindowsEventLogHandler(logging.Handler):
 
     def emit(self, record: logging.LogRecord) -> None:
         event_id: int | None = getattr(record, "winlog_event_id", None)
-        if event_id is None or not WIN32_AVAILABLE:
+        if event_id is None or not win32_available:
             return
         try:
             msg = self.format(record)

@@ -139,7 +139,9 @@ def print_session_intro(state: ReplState) -> None:
     if not state.quiet:
         print(
             "Paste your message and submit with "
-            f"{submit_key_hint()}. Ctrl+C cancels the current draft; use '/quit' or '/exit' to exit. Use '/include' or '/attach' to attach a local file, '/skills' to list skills, and '/template' to run a prompt template.\n"
+            f"{submit_key_hint()}. Ctrl+C cancels the current draft; use '/quit' or '/exit' to exit. "
+            "Use '/include' or '/attach' to attach a local file, '/skills' to list skills, "
+            "and '/template' to run a prompt template.\n"
         )
     chat_cfg = getattr(state.cfg, "chat", None)
     no_write = bool(getattr(chat_cfg, "no_write", False))
@@ -285,6 +287,14 @@ def humanize_report_key(key: str) -> str:
 
 def render_markdown_config(data: object, *, title: str = "Configuration", level: int = 1) -> str:
     """Render a nested config object as Markdown headings and list items."""
+    def append_scalar_list(lines: list[str], label: str, values: list[object]) -> None:
+        if values:
+            lines.append(f"- {label}:")
+            for item in values:
+                lines.append(f"  - {item}")
+            return
+        lines.append(f"- {label}: (none)")
+
     lines = [f"{'#' * level} {title}"]
     if isinstance(data, dict):
         scalar_items = [(key, value) for key, value in data.items() if not isinstance(value, dict)]
@@ -293,12 +303,7 @@ def render_markdown_config(data: object, *, title: str = "Configuration", level:
             for key, value in scalar_items:
                 label = humanize_report_key(str(key))
                 if isinstance(value, list):
-                    if value:
-                        lines.append(f"- {label}:")
-                        for item in value:
-                            lines.append(f"  - {item}")
-                    else:
-                        lines.append(f"- {label}: (none)")
+                    append_scalar_list(lines, label, value)
                 else:
                     lines.append(f"- {label}: {value}")
         else:

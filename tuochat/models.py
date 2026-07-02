@@ -7,7 +7,7 @@ Serializable to/from dicts for JSON and sqlite storage.
 from __future__ import annotations
 
 import uuid
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
@@ -27,6 +27,11 @@ class MessageStatus(str, Enum):
     COMPLETE = "complete"
     PARTIAL = "partial"
     FAILED = "failed"
+
+
+def dataclass_field_names(model_type: type[Any]) -> set[str]:
+    """Return the declared field names for a dataclass type."""
+    return {item.name for item in fields(model_type)}
 
 
 def utcnow() -> str:
@@ -57,7 +62,8 @@ class Message:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Message:
         """Deserialize from a dict."""
-        return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})
+        allowed_fields = dataclass_field_names(cls)
+        return cls(**{key: value for key, value in data.items() if key in allowed_fields})
 
 
 @dataclass
@@ -89,7 +95,8 @@ class Conversation:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Conversation:
         """Deserialize from a dict (without messages)."""
-        filtered = {k: v for k, v in data.items() if k in cls.__dataclass_fields__ and k != "messages"}
+        allowed_fields = dataclass_field_names(cls)
+        filtered = {key: value for key, value in data.items() if key in allowed_fields and key != "messages"}
         return cls(**filtered)
 
     @classmethod
@@ -151,7 +158,8 @@ class Usage:
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> Usage:
         """Deserialize from a dict."""
-        return cls(**{k: v for k, v in data.items() if k in cls.__dataclass_fields__})
+        allowed_fields = dataclass_field_names(cls)
+        return cls(**{key: value for key, value in data.items() if key in allowed_fields})
 
 
 @dataclass

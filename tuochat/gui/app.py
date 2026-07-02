@@ -144,6 +144,9 @@ class TkChatApp:
         self.input_history: list[str] = []
         self.input_history_index: int = -1
         self.input_history_draft: str = ""
+        self.conversations_tree: ttk.Treeview | None = None
+        self.archived_tree: ttk.Treeview | None = None
+        self.search_tree: ttk.Treeview | None = None
 
         self.root = tk.Tk()
         self.root.title(window_title_text(self.state.conv.title))
@@ -1407,8 +1410,6 @@ class TkChatApp:
 
     def toggle_verbose_button(self) -> None:
         """Toggle verbose context reporting for future turns."""
-        import logging  # noqa: PLC0415
-
         from tuochat.logging_config import set_console_level  # noqa: PLC0415
 
         if not self.require_idle("changing verbose mode"):
@@ -1594,8 +1595,8 @@ class TkChatApp:
         self.refresh_info_panel()
 
     def browser_attach_next_conversation(
-        self, label: str, content: str, kind: str
-    ) -> None:  # pylint: disable=unused-argument
+        self, label: str, _content: str, _kind: str
+    ) -> None:
         """Callback from Context Browser to queue a custom instruction for the next conversation."""
         if not self.require_idle("applying from Context Browser"):
             return
