@@ -1,9 +1,0 @@
-Bag-Group-Identifier: tuochat-conversations
-Bag-Software-Agent: bagit.py v1.9.0 <https://github.com/LibraryOfCongress/bagit-python>
-Bagging-Date: 2026-04-13
-Conversation-Created-At: 2026-04-13T21:40:15.857099+00:00
-Conversation-Updated-At: 2026-04-13T21:40:16.186926+00:00
-External-Identifier: d6b9a3f8-dc39-43e0-8872-abe703e70244
-Internal-Sender-Description: Tuochat conversation archive: cwd test
-Internal-Sender-Identifier: d6b9a3f8-dc39-43e0-8872-abe703e70244
-Payload-Oxum: 0.0

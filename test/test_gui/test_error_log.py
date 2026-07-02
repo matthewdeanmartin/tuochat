@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -37,6 +38,11 @@ def tk_root():
         root.destroy()
 
 
+def iso_now_minus(*, days: int = 0, hours: int = 0, minutes: int = 0) -> str:
+    timestamp = datetime.now(timezone.utc) - timedelta(days=days, hours=hours, minutes=minutes)
+    return timestamp.replace(microsecond=0).isoformat()
+
+
 # ---------------------------------------------------------------------------
 # Store — basic CRUD
 # ---------------------------------------------------------------------------
@@ -44,7 +50,7 @@ def tk_root():
 
 def test_save_and_retrieve_warning(store):
     store.save_error_log_entry(
-        recorded_at="2026-04-11T10:00:00",
+        recorded_at=iso_now_minus(days=1),
         level=logging.WARNING,
         level_name="WARNING",
         logger_name="tuochat.test",
@@ -70,7 +76,7 @@ def test_save_and_retrieve_warning(store):
 
 def test_save_error_with_exception_fields(store):
     store.save_error_log_entry(
-        recorded_at="2026-04-11T10:01:00",
+        recorded_at=iso_now_minus(days=1, minutes=1),
         level=logging.ERROR,
         level_name="ERROR",
         logger_name="tuochat.provider",
@@ -91,9 +97,11 @@ def test_save_error_with_exception_fields(store):
 
 
 def test_min_level_filter_excludes_lower(store):
-    for level, name in [(logging.WARNING, "WARNING"), (logging.ERROR, "ERROR"), (logging.CRITICAL, "CRITICAL")]:
+    for offset_minutes, (level, name) in enumerate(
+        [(logging.WARNING, "WARNING"), (logging.ERROR, "ERROR"), (logging.CRITICAL, "CRITICAL")]
+    ):
         store.save_error_log_entry(
-            recorded_at=f"2026-04-11T10:0{level // 10}:00",
+            recorded_at=iso_now_minus(days=1, minutes=offset_minutes),
             level=level,
             level_name=name,
             logger_name="tuochat.x",
@@ -111,7 +119,13 @@ def test_min_level_filter_excludes_lower(store):
 
 
 def test_entries_returned_newest_first(store):
-    for ts in ["2026-04-11T08:00:00", "2026-04-11T09:00:00", "2026-04-11T10:00:00"]:
+    now = datetime.now(timezone.utc).replace(microsecond=0)
+    timestamps = [
+        (now - timedelta(hours=3)).isoformat(),
+        (now - timedelta(hours=2)).isoformat(),
+        (now - timedelta(hours=1)).isoformat(),
+    ]
+    for ts in timestamps:
         store.save_error_log_entry(
             recorded_at=ts,
             level=logging.WARNING,
@@ -126,13 +140,13 @@ def test_entries_returned_newest_first(store):
             func_name="f",
         )
     entries = store.get_error_log_entries()
-    assert entries[0]["message"] == "2026-04-11T10:00:00"
-    assert entries[-1]["message"] == "2026-04-11T08:00:00"
+    assert entries[0]["message"] == timestamps[-1]
+    assert entries[-1]["message"] == timestamps[0]
 
 
 def test_delete_entry_by_id(store):
     store.save_error_log_entry(
-        recorded_at="2026-04-11T10:00:00",
+        recorded_at=iso_now_minus(days=1),
         level=logging.ERROR,
         level_name="ERROR",
         logger_name="tuochat.x",
@@ -159,7 +173,7 @@ def test_delete_nonexistent_entry_returns_false(store):
 def test_clear_all_removes_all_entries(store):
     for i in range(5):
         store.save_error_log_entry(
-            recorded_at=f"2026-04-11T10:0{i}:00",
+            recorded_at=iso_now_minus(days=1, minutes=i),
             level=logging.WARNING,
             level_name="WARNING",
             logger_name="tuochat.x",
@@ -179,7 +193,7 @@ def test_clear_all_removes_all_entries(store):
 def test_limit_parameter_caps_results(store):
     for i in range(10):
         store.save_error_log_entry(
-            recorded_at=f"2026-04-11T10:{i:02d}:00",
+            recorded_at=iso_now_minus(days=1, minutes=i),
             level=logging.ERROR,
             level_name="ERROR",
             logger_name="tuochat.x",
@@ -197,7 +211,7 @@ def test_limit_parameter_caps_results(store):
 
 def test_retention_cleanup_removes_old_entries(store):
     store.save_error_log_entry(
-        recorded_at="2000-01-01T00:00:00",
+        recorded_at=iso_now_minus(days=31),
         level=logging.ERROR,
         level_name="ERROR",
         logger_name="tuochat.x",
@@ -210,7 +224,7 @@ def test_retention_cleanup_removes_old_entries(store):
         func_name="f",
     )
     store.save_error_log_entry(
-        recorded_at="2026-04-11T10:00:00",
+        recorded_at=iso_now_minus(days=1),
         level=logging.ERROR,
         level_name="ERROR",
         logger_name="tuochat.x",
@@ -238,7 +252,7 @@ def test_null_store_stubs_are_no_ops():
     null = NullConversationStore(None)  # type: ignore[arg-type]
     # Should not raise
     null.save_error_log_entry(
-        recorded_at="2026-04-11T10:00:00",
+        recorded_at=iso_now_minus(days=1),
         level=logging.WARNING,
         level_name="WARNING",
         logger_name="x",

@@ -221,6 +221,9 @@ class PromptToolkitBackend:
 
 
 # Singleton backend, selected lazily on first configure call.
+# Keep both names for compatibility with older tests and callers that
+# monkeypatch the module-level backend directly.
+active_backend: InputBackend | None = None
 ACTIVE_BACKEND: InputBackend | None = None
 
 
@@ -233,15 +236,18 @@ def make_backend() -> InputBackend:
 
 def get_backend() -> InputBackend:
     """Return the active backend (may be unconfigured until configure_interactive_io is called)."""
-    global ACTIVE_BACKEND  # noqa: PLW0603
-    if ACTIVE_BACKEND is None:
-        ACTIVE_BACKEND = make_backend()
-    return ACTIVE_BACKEND
+    global active_backend, ACTIVE_BACKEND  # noqa: PLW0603
+    if active_backend is None and ACTIVE_BACKEND is not None:
+        active_backend = ACTIVE_BACKEND
+    if active_backend is None:
+        active_backend = make_backend()
+    ACTIVE_BACKEND = active_backend
+    return active_backend
 
 
 def configure_interactive_io(cfg: Any = None) -> None:
     """Initialise the active backend (history, completion).  Call once at CLI startup."""
-    global ACTIVE_BACKEND  # noqa: PLW0603
+    global active_backend, ACTIVE_BACKEND  # noqa: PLW0603
     backend = get_backend()
     try:
         backend.configure(cfg)
@@ -249,14 +255,15 @@ def configure_interactive_io(cfg: Any = None) -> None:
         # Terminal init failed (e.g. prompt-toolkit on a non-console Windows terminal).
         # Fall back to the readline backend and configure that instead.
         if not isinstance(backend, ReadlineBackend):
-            ACTIVE_BACKEND = ReadlineBackend()
-            ACTIVE_BACKEND.configure(cfg)
+            active_backend = ReadlineBackend()
+            ACTIVE_BACKEND = active_backend
+            active_backend.configure(cfg)
 
 
 def shutdown_interactive_io() -> None:
     """Flush history and tear down the active backend.  Call once at CLI shutdown."""
-    if ACTIVE_BACKEND is not None:
-        ACTIVE_BACKEND.shutdown()
+    if active_backend is not None:
+        active_backend.shutdown()
 
 
 # ---------------------------------------------------------------------------

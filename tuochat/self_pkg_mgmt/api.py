@@ -11,8 +11,7 @@ from typing import Literal
 
 import tuochat.self_pkg_mgmt.self_check as self_check_module
 from tuochat.security import tamper
-from tuochat.self_pkg_mgmt import audit, background, installed, pypi
-from tuochat.self_pkg_mgmt import upgrade
+from tuochat.self_pkg_mgmt import audit, background, installed, pypi, upgrade
 from tuochat.self_pkg_mgmt.cache import COOLOFF, Cache, parse_iso, utcnow
 from tuochat.self_pkg_mgmt.host import Host, default_host
 from tuochat.self_pkg_mgmt.report import Report, VersionInfo, Vulnerability

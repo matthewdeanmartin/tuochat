@@ -1153,17 +1153,20 @@ class TkChatApp:
 
     def require_conversations_tree(self) -> ttk.Treeview:
         """Return the Conversations tree after widget construction."""
-        assert self.conversations_tree is not None
+        if self.conversations_tree is None:
+            raise TypeError("Missing conversation tree, can't continue")
         return self.conversations_tree
 
     def require_archived_tree(self) -> ttk.Treeview:
         """Return the Archive tree after widget construction."""
-        assert self.archived_tree is not None
+        if self.archived_tree is None:
+            raise TypeError("Missing archived tree, can't continue")
         return self.archived_tree
 
     def require_search_tree(self) -> ttk.Treeview:
         """Return the Search tree after widget construction."""
-        assert self.search_tree is not None
+        if self.search_tree is None:
+            raise TypeError("Missing search tree, can't continue")
         return self.search_tree
 
     def refresh_conversations_tree(self, bag_status: dict[str, str] | None = None) -> None:
