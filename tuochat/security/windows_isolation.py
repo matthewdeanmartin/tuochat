@@ -25,8 +25,14 @@ from __future__ import annotations
 import logging
 import sys
 from dataclasses import dataclass, field
+from typing import Any
 
 logger = logging.getLogger(__name__)
+
+
+def get_os_file_handle(msvcrt_module: Any, file_descriptor: int) -> int:
+    """Return a Windows OS handle for a Python file descriptor."""
+    return msvcrt_module.get_osfhandle(file_descriptor)
 
 # ---------------------------------------------------------------------------
 # Availability gate
@@ -347,9 +353,9 @@ def spawn_isolated(
 
     si = win32process.STARTUPINFO()
     si.dwFlags |= win32con.STARTF_USESTDHANDLES
-    si.hStdInput = msvcrt.get_osfhandle(stdin_r_fd)
-    si.hStdOutput = msvcrt.get_osfhandle(stdout_w_fd)
-    si.hStdError = msvcrt.get_osfhandle(stdout_w_fd)
+    si.hStdInput = get_os_file_handle(msvcrt, stdin_r_fd)
+    si.hStdOutput = get_os_file_handle(msvcrt, stdout_w_fd)
+    si.hStdError = get_os_file_handle(msvcrt, stdout_w_fd)
 
     creation_flags = win32con.CREATE_NO_WINDOW
 
