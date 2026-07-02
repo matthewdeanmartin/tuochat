@@ -210,9 +210,29 @@ def response_warning_text(cfg: TuochatConfig) -> str:
     return cfg.chat.response_footer_warning_text.strip()
 
 
+def configured_gui_model(cfg: TuochatConfig) -> str | None:
+    """Choose the initial GUI provider from the usable configuration."""
+    if cfg.gitlab.host and cfg.gitlab.token:
+        return "duo"
+    if cfg.openrouter.api_key and cfg.openrouter.effective_models():
+        return "openrouter"
+    return None
+
+
+def next_model_key(active_model: str) -> str:
+    """Return the next provider key in the GUI model cycle."""
+    model_keys = tuple(MODEL_LABELS)
+    try:
+        current_index = model_keys.index(active_model)
+    except ValueError:
+        return model_keys[0]
+    return model_keys[(current_index + 1) % len(model_keys)]
+
+
 def next_model_toggle_label(active_model: str) -> str:
-    """Return the button label for toggling between Duo and Eliza."""
-    return "Use Eliza" if active_model == "duo" else "Use Duo"
+    """Return the toolbar label for cycling to the next provider."""
+    next_model = next_model_key(active_model)
+    return f"Use {MODEL_LABELS[next_model]}"
 
 
 def attachment_speedbar_labels() -> tuple[str, ...]:

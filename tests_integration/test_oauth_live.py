@@ -212,9 +212,7 @@ def test_token_endpoint_rejects_fake_code() -> None:
         post_token_request(client, payload)
     except OAuthError as exc:
         msg = str(exc)
-        assert "invalid_grant" in msg or "HTTP 400" in msg or "HTTP 401" in msg, (
-            f"unexpected token error shape: {msg}"
-        )
+        assert "invalid_grant" in msg or "HTTP 400" in msg or "HTTP 401" in msg, f"unexpected token error shape: {msg}"
         print(f"token endpoint reachable, rejected fake code as expected: {msg[:120]}")
         return
     raise AssertionError("token endpoint accepted a fake authorization code -- impossible")

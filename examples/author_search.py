@@ -53,7 +53,10 @@ def main() -> None:
     try:
         author = ChoiceInput(
             "Author search.",
-            [Choice(label=item["name"], value=item, aliases=(item["country"],), description=item["known_for"]) for item in AUTHORS],
+            [
+                Choice(label=item["name"], value=item, aliases=(item["country"],), description=item["known_for"])
+                for item in AUTHORS
+            ],
         ).run(context)
     except InteractionCancelled:
         context.say("Author search cancelled.")

@@ -48,6 +48,13 @@ ______________________________________________________________________
 | `TUOCHAT_OAUTH_APP_ID` | OAuth client/application ID used by `tuochat auth login` |
 | `TUOCHAT_OAUTH_SECRET` | OAuth client secret used by `tuochat auth login` |
 | `TUOCHAT_OAUTH_REDIRECT` | OAuth loopback redirect URI |
+| `OPENROUTER_API_KEY` | OpenRouter API key |
+| `OPENROUTER_BASE_URL` | OpenRouter-compatible API base URL |
+| `OPENROUTER_MODEL` | Default OpenRouter model identifier |
+| `OPENROUTER_MODELS` | Comma-separated OpenRouter model rotation list |
+| `OPENROUTER_ROTATE_MODELS` | Enable model rotation (`true` or `false`) |
+| `OPENROUTER_HTTP_REFERER` | Optional OpenRouter application attribution URL |
+| `OPENROUTER_X_TITLE` | Optional OpenRouter application title |
 | `TUOCHAT_JIRA_HOST` | Jira host URL |
 | `TUOCHAT_JIRA_DEPLOYMENT` | Jira deployment type: `cloud` or `server` |
 | `TUOCHAT_JIRA_EMAIL` | Jira email for cloud auth |
@@ -114,6 +121,26 @@ Notes:
 - `generated_file_header_*` controls the review header added to extracted files.
 - `/write-here-mode` and `/approve-writes` are currently session toggles exposed through slash
   commands and GUI buttons. They are not loaded from `config.toml`.
+
+### `[openrouter]`
+
+OpenRouter is an optional alternative to GitLab Duo. Install `tuochat[openrouter]`, then store a
+key with `tuochat openrouter login` or set `OPENROUTER_API_KEY`.
+
+```toml
+[openrouter]
+api_key = ""
+base_url = "https://openrouter.ai/api/v1"
+model = "openai/gpt-4.1-mini"
+models = ["openai/gpt-4.1-mini", "openrouter/free"]
+rotate_models = false
+http_referer = ""
+x_title = "tuochat"
+```
+
+`models` takes precedence over `model`. Enable `rotate_models` to advance through that list once
+per request. In an interactive session, `/openrouter-model set <model-id>` temporarily pins one
+model without changing the config file.
 
 ### `[notifications]`
 

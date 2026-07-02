@@ -12,11 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed for any bug fixes.
 - Security in case of vulnerabilities.
 
+## [Unreleased]
+
+### Fixed
+
+- Bug fixes. Surface openrouter
+- Fix error handling when response from provider is abruptly stopped.
+
 ## [0.8.0] - 2026-04-28
 
 ### Added
 
-- Openrouter integration. My 30 trail with Gitlab is expiring.
+- Openrouter integration. My 30 day trial with Gitlab is expiring.
 
 ### Changed
 

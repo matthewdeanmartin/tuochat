@@ -473,7 +473,7 @@ TUTORIAL_LESSONS: dict[str, dict[str, object]] = {
     },
     "model-selection": {
         "title": "Model selection",
-        "summary": "Pick between Duo and Eliza during the session.",
+        "summary": "Pick between Duo, Eliza, and OpenRouter during the session.",
         "body": [
             "Use `/model` to see the current model and pick a different one.",
             "",

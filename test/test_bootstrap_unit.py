@@ -65,6 +65,16 @@ def test_is_first_run_with_env(tmp_path):
         assert bootstrap.is_first_run(cfg, config_path=str(config_path)) is False
 
 
+def test_is_first_run_with_openrouter_configuration(tmp_path):
+    cfg = TuochatConfig()
+    cfg.openrouter.api_key = "sk-or-test"
+    cfg.openrouter.model = "openai/gpt-4.1-mini"
+    config_path = tmp_path / "nonexistent.toml"
+
+    with patch.dict(os.environ, {"TUOCHAT_GITLAB_HOST": "", "TUOCHAT_GITLAB_TOKEN": ""}):
+        assert bootstrap.is_first_run(cfg, config_path=str(config_path)) is False
+
+
 def test_is_first_run_with_existing_config_file(tmp_path):
     cfg = TuochatConfig()
     config_path = tmp_path / "config.toml"

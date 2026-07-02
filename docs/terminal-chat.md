@@ -109,18 +109,22 @@ ______________________________________________________________________
 
 ## Models
 
-Tuochat supports two models:
+Tuochat supports three providers:
 
 | Model | Description |
 |---|---|
 | `duo` | GitLab Duo Chat (default) |
 | `eliza` | Local Eliza chatbot, for testing without network access |
+| `openrouter` | Any configured OpenRouter model; requires the `openrouter` extra and an API key |
 
 Switch with:
 
 ```text
 /model duo
 /model eliza
+/model openrouter
+/openrouter-model list
+/openrouter-model set anthropic/claude-sonnet-4
 ```
 
 ______________________________________________________________________

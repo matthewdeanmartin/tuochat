@@ -43,9 +43,11 @@ def test_build_openrouter_provider_uses_effective_models_and_rotation():
     cfg.openrouter.api_key = "sk-test"
     cfg.openrouter.models = ["openai/gpt-4.1-mini", "openrouter/free"]
     cfg.openrouter.rotate_models = True
+    cfg.openrouter.base_url = "https://router.example.test/v1"
     provider = build_openrouter_provider(cfg)
     assert provider.models == ["openai/gpt-4.1-mini", "openrouter/free"]
     assert provider.rotate_models is True
+    assert provider.base_url == "https://router.example.test/v1"
 
 
 def test_build_openrouter_provider_override_pins_single_model_and_disables_rotation():

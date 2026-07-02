@@ -14,7 +14,12 @@ JSON_CASES = [
     pytest.param(("usage", "--format", "json"), "dict-key", "total_tokens", id="usage-json"),
     pytest.param(("context", "files", "--format", "json"), "list-member", "README.md", id="context-files-json"),
     pytest.param(("context", "skills", "--format", "json"), "list-dict-key", "name", id="context-skills-json"),
-    pytest.param(("context", "templates", "--format", "json"), "list-member-label", "central:central-template", id="context-templates-json"),
+    pytest.param(
+        ("context", "templates", "--format", "json"),
+        "list-member-label",
+        "central:central-template",
+        id="context-templates-json",
+    ),
     pytest.param(
         ("context", "custom-instructions", "--format", "json"),
         "list-member-label",
@@ -49,7 +54,9 @@ def assert_payload_shape(payload: object, shape: str, expected: str) -> None:
 
 
 @pytest.mark.parametrize(("args", "shape", "expected"), JSON_CASES)
-def test_cli_dry_run_json_paths(benchmark, repo_root, benchmark_workspace, cli_env, args: tuple[str, ...], shape: str, expected: str) -> None:
+def test_cli_dry_run_json_paths(
+    benchmark, repo_root, benchmark_workspace, cli_env, args: tuple[str, ...], shape: str, expected: str
+) -> None:
     """Benchmark dry-run style commands that stay local and deterministic."""
     result = benchmark(run_cli_command, args, repo_root, benchmark_workspace, cli_env)
 

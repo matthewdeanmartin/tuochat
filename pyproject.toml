@@ -43,7 +43,7 @@ jira = [
     "jira>=3.10.5; python_version >= '3.10'",
 ]
 openrouter = [
-    "openrouter; python_full_version >= '3.9.2'",
+    "openrouter>=0.9.1; python_full_version >= '3.9.2'",
 ]
 weak-sandbox = [
     "pywin32; platform_system == 'Windows'",
@@ -64,6 +64,7 @@ selfcheck = [
 all = [
     "python-gitlab>=6.5.0",
     "jira>=3.10.5; python_version >= '3.10'",
+    "openrouter>=0.9.1; python_full_version >= '3.9.2'",
     "orjson",
     "rtoml; python_version < '3.14'",
     "bagit",
@@ -89,7 +90,7 @@ web = [
 
 [dependency-groups]
 dev = [
-    "keepachangelog-manager>=4.0.0; python_version >= '3.13'",
+    "keepachangelog-manager-fork[all]>=6.5.0; python_version < '3.15'",
     # "git2md; python_version >= '3.10'",
     # "pyclean; python_version >= '3.12'",
     # "strip-docs>=1.0; python_version >= '3.12'",

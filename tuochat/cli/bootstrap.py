@@ -61,8 +61,15 @@ def build_store(cfg: TuochatConfig) -> ConversationStore | NullConversationStore
 def is_first_run(cfg: TuochatConfig, *, config_path: str | None = None) -> bool:
     """Return True when no usable config or env-backed credentials exist yet."""
     has_env_credentials = bool(os.environ.get("TUOCHAT_GITLAB_HOST") and os.environ.get("TUOCHAT_GITLAB_TOKEN"))
+    has_openrouter_configuration = bool(cfg.openrouter.api_key and cfg.openrouter.effective_models())
     target = Path(config_path).expanduser() if config_path else cfg.config_file
-    return not target.is_file() and not has_env_credentials and not cfg.gitlab.host and not cfg.gitlab.token
+    return (
+        not target.is_file()
+        and not has_env_credentials
+        and not cfg.gitlab.host
+        and not cfg.gitlab.token
+        and not has_openrouter_configuration
+    )
 
 
 def maybe_run_first_run_setup(cfg: TuochatConfig, *, config_path: str | None = None) -> TuochatConfig:

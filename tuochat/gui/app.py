@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import io
+import logging
 import os
 import queue
 import re
 import threading
 import tkinter as tk
+import traceback
+from datetime import datetime, timezone
 from functools import partial
 from pathlib import Path
 from tkinter import filedialog, messagebox, simpledialog, ttk
@@ -87,6 +90,7 @@ from tuochat.gui.rendering import (
     about_dialog_text,
     attached_files_dialog_text,
     attachment_speedbar_labels,
+    configured_gui_model,
     confirm_nuke,
     conversation_menu_label,
     default_export_filename,
@@ -97,6 +101,7 @@ from tuochat.gui.rendering import (
     is_attached_code_prompt,
     is_classification_prompt,
     keyboard_shortcuts_text,
+    next_model_key,
     next_model_toggle_label,
     render_attached_files_text,
     render_context_text,
@@ -126,7 +131,7 @@ class TkChatApp:
         self.store = store
         self.output_queue: queue.Queue[str] = queue.Queue()
         self.prompt_queue: queue.Queue[PromptRequest] = queue.Queue()
-        self.event_queue: queue.Queue[tuple[str, bool]] = queue.Queue()
+        self.event_queue: queue.Queue[tuple[str, Any]] = queue.Queue()
         self.stream = TranscriptStream(self.output_queue)
         self.busy = False
         self.close_when_idle = False
@@ -1001,7 +1006,7 @@ class TkChatApp:
         ToolTip(self.verbose_button, "Toggle verbose context reporting for future turns.")
         ToolTip(self.no_write_button, "Disable local database, filesystem, and file-log writes for this session.")
         ToolTip(self.code_interpreter_button, "Toggle sandbox/code-interpreter prompts for this session.")
-        ToolTip(self.model_toggle_button, "Switch between Duo and Eliza.")
+        ToolTip(self.model_toggle_button, "Cycle between Duo, Eliza, and OpenRouter.")
         ToolTip(
             self.memory_button, "Ask the bot what to remember and save to .tuochat/memory.md (pinned to future convos)."
         )
@@ -1035,6 +1040,13 @@ class TkChatApp:
         self.transcript.insert("end", text)
         self.transcript.see("end")
         self.transcript.configure(state="disabled")
+
+    def close_open_code_block_in_transcript(self) -> None:
+        """Append a closing ``` fence if the transcript has an unclosed code block."""
+        content = self.transcript.get("1.0", "end")
+        fence_count = sum(1 for line in content.splitlines() if re.match(r"^```", line))
+        if fence_count % 2 == 1:
+            self.append_transcript("```\n")
 
     def clear_transcript(self) -> None:
         self.transcript.configure(state="normal")
@@ -1914,8 +1926,7 @@ class TkChatApp:
         self.refresh_info_panel()
 
     def toggle_active_model_button(self) -> None:
-        target = "eliza" if self.state.active_model == "duo" else "duo"
-        self.set_active_model(target)
+        self.set_active_model(next_model_key(self.state.active_model))
 
     def submit_current_text(self, event=None):
         # pylint: disable=unused-argument
@@ -2013,6 +2024,29 @@ class TkChatApp:
         try:
             with redirect_standard_io(stdout=self.stream, stderr=self.stream), prompt_handler(self.prompt_user):  # type: ignore[arg-type]
                 should_exit = process_repl_submission(raw_input=raw_input, state=self.state)
+        except Exception as exc:
+            tb_str = traceback.format_exc()
+            try:
+                self.store.save_error_log_entry(
+                    recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                    level=logging.ERROR,
+                    level_name="ERROR",
+                    logger_name="tuochat.gui",
+                    message=str(exc),
+                    exc_type=type(exc).__name__,
+                    exc_value=str(exc),
+                    exc_traceback=tb_str,
+                    filename=None,
+                    lineno=None,
+                    func_name="process_submission",
+                )
+            except Exception:
+                pass
+            print(
+                f"\n[Provider error] {type(exc).__name__}: {exc}\n" "Full details logged to the Errors tab.\n",
+                file=self.stream,
+            )
+            self.event_queue.put(("handle_provider_error", None))
         finally:
             self.event_queue.put(("submission_complete", should_exit))
 
@@ -2081,15 +2115,20 @@ class TkChatApp:
     def drain_event_queue(self) -> None:
         while True:
             try:
-                event_name, should_exit = self.event_queue.get_nowait()
+                event_name, event_data = self.event_queue.get_nowait()
             except queue.Empty:
                 return
+            if event_name == "handle_provider_error":
+                self.close_open_code_block_in_transcript()
+                if hasattr(self, "error_log_tab_view"):
+                    self.error_log_tab_view.refresh()
+                continue
             if event_name != "submission_complete":
                 continue
             self.set_busy(False)
             self.model_var.set(self.state.active_model)
             self.refresh_info_panel()
-            if should_exit or self.close_when_idle:
+            if event_data or self.close_when_idle:
                 self.finalize_and_close()
 
     def refresh_resume_menu(self) -> None:
@@ -2566,8 +2605,6 @@ class TkChatApp:
 
     def execute_nuke(self) -> None:
         """Delete centralized app-state paths after confirmation."""
-        import logging as _logging  # noqa: PLC0415
-
         from tuochat import winlog  # noqa: PLC0415
 
         targets = nuke_targets(self.state.cfg)
@@ -2594,14 +2631,12 @@ class TkChatApp:
         winlog.report_event(
             winlog.EV_ADMIN_NUKE,
             f"tuochat GUI nuke executed: {deleted} path(s) deleted, {failed} failed.",
-            _logging.WARNING,
+            logging.WARNING,
         )
 
 
 def run_gui_app(cfg: TuochatConfig, args: Any) -> int:
     """Run the minimal Tkinter GUI front end."""
-    import logging as _logging  # noqa: PLC0415
-
     from tuochat import winlog  # noqa: PLC0415
     from tuochat.logging_config import setup_logging  # noqa: PLC0415
 
@@ -2615,19 +2650,21 @@ def run_gui_app(cfg: TuochatConfig, args: Any) -> int:
 
     cfg = maybe_run_first_run_setup(cfg, config_path=args.config if hasattr(args, "config") else None)
     warnings = cfg.validate()
+    active_model = configured_gui_model(cfg)
 
-    if not cfg.gitlab.host or not cfg.gitlab.token:
+    if active_model is None:
         winlog.report_event(
             winlog.EV_CONFIG_MISSING_REQUIRED,
-            "tuochat GUI startup aborted: GitLab host or token not configured.",
-            _logging.ERROR,
+            "tuochat GUI startup aborted: no Duo or OpenRouter provider is configured.",
+            logging.ERROR,
         )
         root = tk.Tk()
         root.withdraw()
         details = "\n".join(
             [
-                "GitLab host and token must be configured.",
-                f"Create {cfg.config_file} or set TUOCHAT_GITLAB_HOST and TUOCHAT_GITLAB_TOKEN.",
+                "Configure either GitLab Duo or OpenRouter before starting the GUI.",
+                f"Duo: create {cfg.config_file} or set TUOCHAT_GITLAB_HOST and TUOCHAT_GITLAB_TOKEN.",
+                "OpenRouter: run `tuochat openrouter login` and set OPENROUTER_MODEL or OPENROUTER_MODELS.",
             ]
         )
         messagebox.showerror("tuochat", details, parent=root)
@@ -2635,7 +2672,13 @@ def run_gui_app(cfg: TuochatConfig, args: Any) -> int:
         return 1
 
     timeout_override = getattr(args, "timeout", None)
-    provider = build_provider(cfg, timeout_override=timeout_override)
+    if active_model == "duo":
+        provider: Any = build_provider(cfg, timeout_override=timeout_override)
+    else:
+        from tuochat.cli.session import build_openrouter_provider  # noqa: PLC0415
+
+        provider = build_openrouter_provider(cfg)
+        warnings = [warning for warning in warnings if not warning.startswith("GitLab ")]
     store = build_store(cfg)
 
     from tuochat.logging_config import sqlite_log_handler  # noqa: PLC0415
@@ -2666,7 +2709,7 @@ def run_gui_app(cfg: TuochatConfig, args: Any) -> int:
         dot_timer_enabled=cfg.chat.dot_timer,
         no_code_mode=False,
         code_interpreter_enabled=True,
-        active_model="duo",
+        active_model=active_model,
         active_system_prompt_sources=prompt_sources,
         command_log=[],
         local_writes_enabled=not no_write_enabled(cfg),
@@ -2678,7 +2721,7 @@ def run_gui_app(cfg: TuochatConfig, args: Any) -> int:
     if isinstance(provider, DuoProvider):
         provider.reset_conversation()
 
-    winlog.report_event(winlog.EV_STARTUP, f"tuochat GUI session started (host={cfg.gitlab.host!r}).")
+    winlog.report_event(winlog.EV_STARTUP, f"tuochat GUI session started (model={active_model!r}).")
     app = TkChatApp(state, store)
     if warnings:
         app.append_transcript("Warnings:\n")

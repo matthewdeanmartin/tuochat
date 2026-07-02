@@ -19,7 +19,8 @@ ______________________________________________________________________
 | `/about` | Show version, author, and license text |
 | `/setup` | Re-run the configuration wizard |
 | `/shortcuts` | Show keyboard shortcuts for the current input backend |
-| `/model [duo\|eliza]` | Switch between GitLab Duo and the local Eliza test chatbot |
+| `/model [duo\|eliza\|openrouter]` | Switch between GitLab Duo, local Eliza, and OpenRouter |
+| `/openrouter-model [status\|list\|set ID\|clear\|rotate]` | Inspect or change OpenRouter model selection for this session |
 | `/tutorial [lesson]` | Run the interactive tutorial |
 | `/observability [text\|json]` | Show 30-day Duo latency and outcome data |
 

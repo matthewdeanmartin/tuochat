@@ -421,6 +421,7 @@ def build_openrouter_provider(cfg: TuochatConfig, *, model_override: str | None 
         api_key=cfg.openrouter.api_key,
         models=models,
         rotate_models=cfg.openrouter.rotate_models and model_override is None,
+        base_url=cfg.openrouter.base_url,
         http_referer=cfg.openrouter.http_referer or None,
         x_title=cfg.openrouter.x_title or None,
         timeout=cfg.chat.timeout,

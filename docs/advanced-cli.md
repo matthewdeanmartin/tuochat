@@ -76,7 +76,7 @@ tuochat chat new "Explain this code" --include src/auth.py
 | `--output-file PATH` | Write the final response text to a file |
 | `--no-stream` | Disable streaming |
 | `--timeout N` | Override request timeout |
-| `--model duo\|eliza` | Select the model |
+| `--model duo\|eliza\|openrouter` | Select the provider |
 | `--cwd PATH` | Set the working directory for the turn and save it on the conversation |
 | `--format markdown\|json` | Output format |
 | `--system-prompt TEXT` | Override the system prompt |
@@ -138,7 +138,7 @@ tuochat headless ask "Explain this code" --include src/auth.py
 | `--output-file PATH` | Write the response to a file |
 | `--no-stream` | Wait for the full response before printing |
 | `--timeout N` | Request timeout in seconds |
-| `--model duo\|eliza` | Select the model |
+| `--model duo\|eliza\|openrouter` | Select the provider |
 | `--system-prompt TEXT` | Override the system prompt |
 | `--resource-id GID` | Scope Duo to a GitLab project |
 

@@ -113,9 +113,7 @@ def test_live_duo_model_probe_reports_supported_field_or_explicit_rejection() ->
         ),
     ],
 )
-def test_live_gitlab_graphql_rejects_model_metadata_override(
-    query: str, input_name: str, argument_name: str
-) -> None:
+def test_live_gitlab_graphql_rejects_model_metadata_override(query: str, input_name: str, argument_name: str) -> None:
     """Confirm the public GitLab GraphQL entrypoint does not expose ai-assist model_metadata."""
     live = require_live_duo_provider()
 

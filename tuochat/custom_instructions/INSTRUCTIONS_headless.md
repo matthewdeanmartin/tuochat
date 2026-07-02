@@ -21,7 +21,7 @@ This writes `challenge_bug/password_manager.py.check` in the repo (with write-he
 which the driver renames to `challenge_bug/password_manager.py`.
 
 **Use this label-line pattern when the driver's prompt contains fenced code blocks.**
-If you include a filename on the fence line itself (e.g. `` ```python foo.py ``), and the
+If you include a filename on the fence line itself (e.g. ```` ```python foo.py ````), and the
 prompt you received already contained triple-backtick fences, you may be tempted to escape
 your fence as `` ` ` `python foo.py `` — tuochat will now normalise that back automatically,
 but the label-line pattern avoids the problem entirely.
@@ -47,14 +47,15 @@ One fenced block per file, with a blank line between blocks.
 ## Markdown inside markdown
 
 If you emit a Markdown document inside an outer triple-backtick fence (for example
-` ```markdown `), do not use triple backticks again inside that document.
+```` ```markdown ````), do not use triple backticks again inside that document.
 For fenced examples inside the document, use tildes instead:
 
-~~~text
+```text
 ~~~bash
 echo hello
-~~~
-~~~
+```
+
+```
 
 This keeps the outer extractable fence parseable by tuochat and the driver.
 
@@ -69,3 +70,4 @@ If a file may be truncated (responses over ~5000 tokens are cut), warn the drive
 Tuochat is non-agentic: it cannot execute shell commands, read files that were not
 attached, or browse the repository. The driver controls all renaming, test execution,
 and feedback loops. Write the files you want and tell the driver what to do with them.
+```

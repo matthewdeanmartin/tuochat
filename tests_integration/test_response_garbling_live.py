@@ -81,15 +81,21 @@ def assert_clean_beginning(assistant_text: str, *, expected_prefix: str) -> None
     beginning = assistant_text.lstrip()
     excerpt = beginning[:160]
     assert excerpt, "Assistant response was empty in the saved artifact."
-    assert beginning.startswith(expected_prefix), f"Expected saved response to start with {expected_prefix!r}, got: {excerpt!r}"
+    assert beginning.startswith(
+        expected_prefix
+    ), f"Expected saved response to start with {expected_prefix!r}, got: {excerpt!r}"
     assert "\ufeff" not in excerpt, f"Saved response began with a BOM: {excerpt!r}"
     assert "\ufffd" not in excerpt, f"Saved response began with replacement characters: {excerpt!r}"
     assert "\x00" not in excerpt, f"Saved response began with a NUL byte: {excerpt!r}"
-    assert all(char.isprintable() or char in "\r\n\t" for char in excerpt), f"Saved response began with control characters: {excerpt!r}"
+    assert all(
+        char.isprintable() or char in "\r\n\t" for char in excerpt
+    ), f"Saved response began with control characters: {excerpt!r}"
 
     english_tail = excerpt[len(expected_prefix) :].lstrip()
     assert english_tail, f"Saved response had no text after the expected prefix: {excerpt!r}"
-    assert any(char.isalpha() for char in english_tail[:40]), f"Saved response did not look like English near the start: {excerpt!r}"
+    assert any(
+        char.isalpha() for char in english_tail[:40]
+    ), f"Saved response did not look like English near the start: {excerpt!r}"
 
 
 @pytest.fixture(scope="session")

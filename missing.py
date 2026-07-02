@@ -30,7 +30,11 @@ def file_has_future_import(path: Path) -> bool:
         return True
 
     for node in tree.body:
-        if isinstance(node, ast.Expr) and isinstance(getattr(node, "value", None), ast.Constant) and isinstance(node.value.value, str):
+        if (
+            isinstance(node, ast.Expr)
+            and isinstance(getattr(node, "value", None), ast.Constant)
+            and isinstance(node.value.value, str)
+        ):
             continue
 
         if isinstance(node, ast.ImportFrom) and node.module == "__future__":

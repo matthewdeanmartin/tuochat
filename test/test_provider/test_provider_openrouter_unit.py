@@ -307,6 +307,27 @@ def test_chat_passes_attribution_headers_to_sdk(monkeypatch: pytest.MonkeyPatch)
     }
 
 
+def test_chat_passes_base_url_and_timeout_using_sdk_parameter_names(monkeypatch: pytest.MonkeyPatch):
+    chat = FakeChat(events_or_response={"choices": [{"message": {"content": "ok"}}]})
+    sdk = install_fake_sdk(monkeypatch, chat)
+    provider = OpenRouterProvider(
+        api_key="sk-test",
+        models=["x"],
+        base_url="https://router.example.test/v1/",
+        timeout=30,
+    )
+
+    list(provider.chat("hi", streaming=False))
+
+    assert sdk.constructor_kwargs == {
+        "api_key": "sk-test",
+        "server_url": "https://router.example.test/v1",
+    }
+    assert chat.last_kwargs is not None
+    assert chat.last_kwargs["timeout_ms"] == 30_000
+    assert "timeout" not in chat.last_kwargs
+
+
 # ---------------------------------------------------------------------------
 # Lazy SDK import behaviour
 # ---------------------------------------------------------------------------

@@ -141,6 +141,23 @@ tuochat auth logout   # remove stored credentials
 tuochat auth refresh  # exchange a refresh token for a new access token
 ```
 
+### OpenRouter alternative
+
+OpenRouter works in the terminal, headless CLI, and GUI without GitLab credentials. Install its
+optional dependency, store a key, and configure at least one model:
+
+```bash
+uv tool install "tuochat[openrouter]"
+tuochat openrouter login
+```
+
+```toml
+[openrouter]
+model = "openai/gpt-4.1-mini"
+```
+
+Select it with `/model openrouter`, `--model openrouter`, or the GUI Model menu.
+
 ### Environment variable reference
 
 All settings can be supplied via environment instead of the config file:

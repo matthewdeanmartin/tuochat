@@ -48,6 +48,7 @@ Some features require optional dependencies. Install them with the appropriate e
 |---|---|---|
 | `gitlab` | GitLab project discovery and `/gl` artifact commands via `python-gitlab` | `pip install "tuochat[gitlab]"` |
 | `jira` | Jira project and issue browsing via `/jira` | `pip install "tuochat[jira]"` |
+| `openrouter` | OpenRouter models in the terminal, headless CLI, and GUI | `pip install "tuochat[openrouter]"` |
 | `web` | Richer `/web` and `/web-preview` rendering engines | `pip install "tuochat[web]"` |
 | `antitamper` | BagIt-based archive change diagnostics | `pip install "tuochat[antitamper]"` |
 | `fast` | Faster JSON/TOML parsing (`orjson`, `rtoml`) | `pip install "tuochat[fast]"` |
@@ -56,7 +57,7 @@ Some features require optional dependencies. Install them with the appropriate e
 | `js-miniracer` | JavaScript sandbox via MiniRacer only | `pip install "tuochat[js-miniracer]"` |
 | `js-dukpy` | JavaScript sandbox via DukPy only | `pip install "tuochat[js-dukpy]"` |
 | `lua` | Lua sandbox via Lupa only | `pip install "tuochat[lua]"` |
-| `all` | All bundled optional extras | `pip install "tuochat[all]"` |
+| `all` | All bundled optional extras, including OpenRouter | `pip install "tuochat[all]"` |
 
 Installing `selfcheck` only makes the `pip-audit` integration available. The startup audit is still
 **disabled by default** until you enable `[features].startup_audit = true` in your config.

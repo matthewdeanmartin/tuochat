@@ -63,6 +63,20 @@ token = "glpat-xxxxxxxxxxxxxxxxxxxx"
 token_type = "pat"
 ```
 
+To use OpenRouter instead, install `tuochat[openrouter]`, run `tuochat openrouter login`, and set a
+model:
+
+```bash
+tuochat openrouter login
+```
+
+```toml
+[openrouter]
+model = "openai/gpt-4.1-mini"
+```
+
+Then choose it with `/model openrouter`, `--model openrouter`, or the GUI Model menu.
+
 ______________________________________________________________________
 
 ## Step 3 - Start chatting

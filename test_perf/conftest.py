@@ -75,7 +75,9 @@ def cli_env(repo_root: Path, benchmark_state_root: Path) -> dict[str, str]:
     return env
 
 
-def run_cli_command(args: tuple[str, ...], repo_root: Path, working_dir: Path, env: dict[str, str]) -> subprocess.CompletedProcess[str]:
+def run_cli_command(
+    args: tuple[str, ...], repo_root: Path, working_dir: Path, env: dict[str, str]
+) -> subprocess.CompletedProcess[str]:
     """Run the CLI in a subprocess so import and startup cost are included."""
     return subprocess.run(
         [sys.executable, "-m", "tuochat", *args],

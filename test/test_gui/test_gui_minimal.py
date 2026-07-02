@@ -25,6 +25,7 @@ from tuochat.gui.rendering import (
     attached_files_dialog_text,
     attachment_speedbar_labels,
     classification_dialog_text,
+    configured_gui_model,
     confirm_nuke,
     conversation_menu_label,
     default_export_filename,
@@ -35,6 +36,7 @@ from tuochat.gui.rendering import (
     is_attached_code_prompt,
     is_classification_prompt,
     keyboard_shortcuts_text,
+    next_model_key,
     next_model_toggle_label,
     render_attached_files_text,
     render_context_text,
@@ -211,9 +213,40 @@ def test_response_warning_text_uses_config_toggle():
     assert response_warning_text(cfg) == ""
 
 
-def test_next_model_toggle_label_flips_between_duo_and_eliza():
+def test_next_model_toggle_cycles_through_all_providers():
+    assert next_model_key("duo") == "eliza"
+    assert next_model_key("eliza") == "openrouter"
+    assert next_model_key("openrouter") == "duo"
+    assert next_model_key("unknown") == "duo"
+
     assert next_model_toggle_label("duo") == "Use Eliza"
-    assert next_model_toggle_label("eliza") == "Use Duo"
+    assert next_model_toggle_label("eliza") == "Use OpenRouter"
+    assert next_model_toggle_label("openrouter") == "Use Duo"
+
+
+def test_configured_gui_model_prefers_duo_when_both_are_available():
+    cfg = TuochatConfig()
+    cfg.gitlab.host = "https://gitlab.example.com"
+    cfg.gitlab.token = "glpat-test"
+    cfg.openrouter.api_key = "sk-or-test"
+    cfg.openrouter.model = "openai/gpt-4.1-mini"
+
+    assert configured_gui_model(cfg) == "duo"
+
+
+def test_configured_gui_model_supports_openrouter_only_configuration():
+    cfg = TuochatConfig()
+    cfg.openrouter.api_key = "sk-or-test"
+    cfg.openrouter.model = "openai/gpt-4.1-mini"
+
+    assert configured_gui_model(cfg) == "openrouter"
+
+
+def test_configured_gui_model_requires_openrouter_key_and_model():
+    cfg = TuochatConfig()
+    cfg.openrouter.api_key = "sk-or-test"
+
+    assert configured_gui_model(cfg) is None
 
 
 def test_window_title_text_uses_conversation_title_when_present():

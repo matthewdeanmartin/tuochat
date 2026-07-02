@@ -14,9 +14,33 @@ from tuochat.cli.blind_prompt_kit import (
 )
 
 APPOINTMENTS = [
-    {"id": "A-104", "patient": "Maya Lee", "clinician": "Dr. Gomez", "date": "April 14, 2026", "time": "9:30 AM", "status": "Confirmed", "reason": "Follow-up migraine visit"},
-    {"id": "A-105", "patient": "Jon Patel", "clinician": "Dr. Gomez", "date": "April 14, 2026", "time": "11:00 AM", "status": "Pending", "reason": "Medication review"},
-    {"id": "A-106", "patient": "Rosa Kim", "clinician": "Dr. Hart", "date": "April 15, 2026", "time": "2:15 PM", "status": "Confirmed", "reason": "Initial physical therapy consult"},
+    {
+        "id": "A-104",
+        "patient": "Maya Lee",
+        "clinician": "Dr. Gomez",
+        "date": "April 14, 2026",
+        "time": "9:30 AM",
+        "status": "Confirmed",
+        "reason": "Follow-up migraine visit",
+    },
+    {
+        "id": "A-105",
+        "patient": "Jon Patel",
+        "clinician": "Dr. Gomez",
+        "date": "April 14, 2026",
+        "time": "11:00 AM",
+        "status": "Pending",
+        "reason": "Medication review",
+    },
+    {
+        "id": "A-106",
+        "patient": "Rosa Kim",
+        "clinician": "Dr. Hart",
+        "date": "April 15, 2026",
+        "time": "2:15 PM",
+        "status": "Confirmed",
+        "reason": "Initial physical therapy consult",
+    },
 ]
 
 

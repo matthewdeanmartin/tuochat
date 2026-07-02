@@ -18,6 +18,10 @@ Options are the same as `tuochat repl`:
 tuochat gui --prompt "Explain this function" --resource-id gid://gitlab/Project/42
 ```
 
+The GUI can start with either GitLab Duo credentials or a complete OpenRouter configuration. If
+both are configured, Duo is selected initially. If only OpenRouter is configured, OpenRouter is
+selected automatically.
+
 ______________________________________________________________________
 
 ## Requirements
@@ -41,7 +45,7 @@ ______________________________________________________________________
 - **Transcript area**: scrolling view of the conversation.
 - **Input box**: multiline text entry.
 - **Action bar**: send, attach files/folders/skills/custom instructions/templates, re-include a
-  changed file, detach all, model toggle, safety toggles, Memory, Compact, Todo, Help, Status, and Quit.
+  changed file, detach all, provider cycle, safety toggles, Memory, Compact, Todo, Help, Status, and Quit.
 - **Session toggles**: Stream, Mask, Verbose, Approve writes, Write here, No Writes, and Code Int.
 
 ______________________________________________________________________
@@ -81,6 +85,7 @@ The GUI adds direct controls that are easier to discover than slash commands:
 - **Skills / Initial Instr / Template**: attach a skill, custom instructions, or a template
 - **Write here / Approve writes / No Writes**: toggle write mode and persistence
 - **Code Int**: enable or disable sandbox/code-interpreter prompts for the current session
+- **Use ...**: cycle between Duo, Eliza, and OpenRouter; the Model menu can select one directly
 - **Memory / Compact / Todo**: manage pinned workspace context without typing slash commands
 - **Git / GitLab / Jira tabs**: browse and attach project context visually
 

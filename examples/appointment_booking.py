@@ -35,7 +35,12 @@ def main() -> None:
                 optional=True,
                 renderer=lambda values: ", ".join(values) if values else "blank",
             ),
-            FormField(name="notes", label="Notes", component=LargeTextInput("Clinical notes.", terminator="DONE"), optional=True),
+            FormField(
+                name="notes",
+                label="Notes",
+                component=LargeTextInput("Clinical notes.", terminator="DONE"),
+                optional=True,
+            ),
         ],
     )
     try:

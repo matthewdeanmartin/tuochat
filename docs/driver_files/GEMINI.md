@@ -57,14 +57,14 @@ Avoid building an LLM-driven workflow around `tuochat gui` or REPL-only slash co
 ## Turn contract
 
 1. Inspect the workspace yourself.
-2. Decide what Duo actually needs for this turn.
-3. Attach only the necessary context with `--include`, `--web`, `--skill`, `--template`, `--var`, `--resource-id`, and `--cwd`.
-4. Prefer machine-readable output: `--format json` for `chat`, `--json` for `headless`.
-5. Read the full reply before acting.
-6. If tuochat saved extracted files, inspect them and deliberately rename or move any `*.check` outputs.
-7. Run tests or other verification yourself.
-8. Summarize only the relevant failures or requested changes back to Duo.
-9. Continue the same conversation when the prior turns matter.
+1. Decide what Duo actually needs for this turn.
+1. Attach only the necessary context with `--include`, `--web`, `--skill`, `--template`, `--var`, `--resource-id`, and `--cwd`.
+1. Prefer machine-readable output: `--format json` for `chat`, `--json` for `headless`.
+1. Read the full reply before acting.
+1. If tuochat saved extracted files, inspect them and deliberately rename or move any `*.check` outputs.
+1. Run tests or other verification yourself.
+1. Summarize only the relevant failures or requested changes back to Duo.
+1. Continue the same conversation when the prior turns matter.
 
 ## Context rules
 
@@ -85,7 +85,7 @@ When you want files back from Duo:
 - remind Duo that long responses may truncate
 - tell Duo exactly where the driver will place approved files
 
-Useful filename styles include ` ```python:path.py`, ` ```python path.py`, and `filename="path.py"`.
+Useful filename styles include ````  ```python:path.py ````, ````  ```python path.py ````, and `filename="path.py"`.
 
 ## File safety rules
 

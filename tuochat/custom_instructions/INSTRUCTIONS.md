@@ -38,14 +38,15 @@ Do not combine multiple files into a single block.
 ## Markdown inside markdown
 
 If you emit a Markdown document inside an outer triple-backtick fence (for example
-` ```markdown `), do not use triple backticks again inside that document.
+```` ```markdown ````), do not use triple backticks again inside that document.
 For fenced examples inside the document, use tildes instead:
 
-~~~text
+```text
 ~~~bash
 echo hello
-~~~
-~~~
+```
+
+```
 
 This keeps the outer extractable fence parseable by tuochat.
 
@@ -54,3 +55,4 @@ This keeps the outer extractable fence parseable by tuochat.
 Tuochat is non-agentic: it cannot run shell commands, read files you have not attached,
 or browse the repository. The user controls all filesystem writes outside the conversation
 archive.
+```

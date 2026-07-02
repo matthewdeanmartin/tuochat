@@ -16,7 +16,9 @@ FAST_CASES = [
 
 
 @pytest.mark.parametrize(("args", "expected_text"), FAST_CASES)
-def test_cli_fast_paths(benchmark, repo_root, benchmark_workspace, cli_env, args: tuple[str, ...], expected_text: str) -> None:
+def test_cli_fast_paths(
+    benchmark, repo_root, benchmark_workspace, cli_env, args: tuple[str, ...], expected_text: str
+) -> None:
     """Benchmark cheap CLI entrypoints that mostly measure startup overhead."""
     result = benchmark(run_cli_command, args, repo_root, benchmark_workspace, cli_env)
 

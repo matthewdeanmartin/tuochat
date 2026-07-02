@@ -100,9 +100,7 @@ def run_headless_continue_ongoing(env: dict[str, str], prompt: str) -> dict[str,
         check=False,
     )
     assert result.returncode == 0, (
-        "Headless Duo run failed.\n"
-        f"STDOUT:\n{result.stdout}\n"
-        f"STDERR:\n{result.stderr}"
+        "Headless Duo run failed.\n" f"STDOUT:\n{result.stdout}\n" f"STDERR:\n{result.stderr}"
     )
     assert result.stderr == ""
     return json_loads(result.stdout)

@@ -117,6 +117,7 @@ class OpenRouterProvider:
             to the next entry on each `chat()` call, wrapping around.
         rotate_models: When True, rotate through `models` on each call.
             When False, always use `models[0]`.
+        base_url: Optional OpenRouter-compatible API base URL.
         http_referer: Optional HTTP-Referer header value used for
             OpenRouter app attribution.
         x_title: Optional X-Title header value used for OpenRouter app
@@ -131,6 +132,7 @@ class OpenRouterProvider:
         models: Iterable[str],
         *,
         rotate_models: bool = False,
+        base_url: str | None = None,
         http_referer: str | None = None,
         x_title: str | None = None,
         timeout: int | None = None,
@@ -144,6 +146,7 @@ class OpenRouterProvider:
         self.api_key = api_key
         self.models: list[str] = model_list
         self.rotate_models = rotate_models
+        self.base_url = base_url.rstrip("/") if base_url else None
         self.http_referer = http_referer
         self.x_title = x_title
         self.timeout = timeout
@@ -162,6 +165,8 @@ class OpenRouterProvider:
         """Construct a fresh SDK client for one call."""
         sdk = import_openrouter_sdk()
         kwargs: dict[str, Any] = {"api_key": self.api_key}
+        if self.base_url:
+            kwargs["server_url"] = self.base_url
         if self.http_referer:
             kwargs["http_referer"] = self.http_referer
         if self.x_title:
@@ -234,7 +239,7 @@ class OpenRouterProvider:
             "stream": bool(streaming),
         }
         if self.timeout is not None:
-            send_kwargs["timeout"] = self.timeout
+            send_kwargs["timeout_ms"] = self.timeout * 1000
 
         try:
             result = client.chat.send(**send_kwargs)
