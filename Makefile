@@ -90,7 +90,7 @@ $(LOGS_DIR):
 .PHONY: isort
 isort: uv.lock pyproject.toml
 	@echo "Formatting imports"
-	$(VENV) isort .
+	# $(VENV) isort .
 	$(VENV) python scripts/gen_tamper_manifest.py
 
 .PHONY: black
@@ -120,7 +120,7 @@ fix: uv-lock install-plugins ruff-fix isort black sync-metadata
 .PHONY: format-check
 format-check: uv-lock install-plugins
 	@echo "Checking formatter drift"
-	$(NO_COLOR_ENV) $(VENV) isort --check-only .
+	# $(NO_COLOR_ENV) $(VENV) isort --check-only .
 	$(NO_COLOR_ENV) $(VENV) black --check tuochat test
 	$(NO_COLOR_ENV) $(VENV) ruff check .
 

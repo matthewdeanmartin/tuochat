@@ -270,8 +270,7 @@ def pick_prefilter_then_page(
 
 
 ASK_ONE_HELP = (
-    "Commands: Enter or 'y' to select, 'n' next, 'p' prev, "
-    "'[text]' to filter (use square brackets), 'q' to cancel"
+    "Commands: Enter or 'y' to select, 'n' next, 'p' prev, " "'[text]' to filter (use square brackets), 'q' to cancel"
 )
 
 

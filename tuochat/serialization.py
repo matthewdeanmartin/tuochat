@@ -1,4 +1,5 @@
 """JSON and TOML serialization helpers with optional fast-path backends."""
+
 # pylint: disable=no-member
 
 from __future__ import annotations

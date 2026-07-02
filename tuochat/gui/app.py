@@ -557,10 +557,11 @@ class TkChatApp:
 
     def conversations_selected_id(self) -> str | None:
         """Return the conversation ID of the selected Conversations row, or None."""
-        sel = self.conversations_tree.selection()
+        tree = self.require_conversations_tree()
+        sel = tree.selection()
         if not sel:
             return None
-        return self.conversations_tree.set(sel[0], "id") or None
+        return tree.set(sel[0], "id") or None
 
     def conversations_resume_selected(self) -> None:
         """Resume the conversation selected in the Conversations tab."""
@@ -598,10 +599,11 @@ class TkChatApp:
 
     def archived_selected_id(self) -> str | None:
         """Return the conversation ID of the selected Archive row, or None."""
-        sel = self.archived_tree.selection()
+        tree = self.require_archived_tree()
+        sel = tree.selection()
         if not sel:
             return None
-        return self.archived_tree.set(sel[0], "id") or None
+        return tree.set(sel[0], "id") or None
 
     def archived_resume_selected(self) -> None:
         """Resume the conversation selected in the Archive tab."""
@@ -639,10 +641,11 @@ class TkChatApp:
 
     def search_selected_id(self) -> str | None:
         """Return the conversation ID of the selected Search row, or None."""
-        sel = self.search_tree.selection()
+        tree = self.require_search_tree()
+        sel = tree.selection()
         if not sel:
             return None
-        return self.search_tree.set(sel[0], "id") or None
+        return tree.set(sel[0], "id") or None
 
     def search_resume_selected(self) -> None:
         """Resume the conversation selected in the Search tab."""
@@ -1148,11 +1151,26 @@ class TkChatApp:
             return {}
         return {r.conversation_id: r.status for r in results}
 
+    def require_conversations_tree(self) -> ttk.Treeview:
+        """Return the Conversations tree after widget construction."""
+        assert self.conversations_tree is not None
+        return self.conversations_tree
+
+    def require_archived_tree(self) -> ttk.Treeview:
+        """Return the Archive tree after widget construction."""
+        assert self.archived_tree is not None
+        return self.archived_tree
+
+    def require_search_tree(self) -> ttk.Treeview:
+        """Return the Search tree after widget construction."""
+        assert self.search_tree is not None
+        return self.search_tree
+
     def refresh_conversations_tree(self, bag_status: dict[str, str] | None = None) -> None:
         """Repopulate the Conversations Treeview from stored conversations."""
         if bag_status is None:
             bag_status = self.load_bag_status()
-        tree = self.conversations_tree
+        tree = self.require_conversations_tree()
         for item in tree.get_children():
             tree.delete(item)
         if no_write_enabled(self.state.cfg):
@@ -1177,7 +1195,7 @@ class TkChatApp:
         """Repopulate the Archive Treeview from stored archived conversations."""
         if bag_status is None:
             bag_status = self.load_bag_status()
-        tree = self.archived_tree
+        tree = self.require_archived_tree()
         for item in tree.get_children():
             tree.delete(item)
         if no_write_enabled(self.state.cfg):
@@ -1197,7 +1215,7 @@ class TkChatApp:
 
     def refresh_search_tree(self) -> None:
         """Repopulate the Search Treeview from the current search results."""
-        tree = self.search_tree
+        tree = self.require_search_tree()
         for item in tree.get_children():
             tree.delete(item)
         results = self.state.search_candidates
@@ -1594,9 +1612,7 @@ class TkChatApp:
         self.notebook.select(self.files_tab)
         self.refresh_info_panel()
 
-    def browser_attach_next_conversation(
-        self, label: str, _content: str, _kind: str
-    ) -> None:
+    def browser_attach_next_conversation(self, label: str, _content: str, _kind: str) -> None:
         """Callback from Context Browser to queue a custom instruction for the next conversation."""
         if not self.require_idle("applying from Context Browser"):
             return

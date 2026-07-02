@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Generic, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from .core import InteractionContext
 from .exceptions import StepBack
@@ -18,8 +18,9 @@ ValueT = TypeVar("ValueT")
 def make_node_snapshot(
     navigator: TreeNavigator[ValueT],
     stack_snapshot: list[TreeNode[ValueT]],
-) -> callable:
+) -> Callable[[], str]:
     """Bind a tree stack snapshot for help callbacks."""
+
     def describe_snapshot() -> str:
         return navigator.describe_node(stack_snapshot)
 

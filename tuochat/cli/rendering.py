@@ -287,6 +287,7 @@ def humanize_report_key(key: str) -> str:
 
 def render_markdown_config(data: object, *, title: str = "Configuration", level: int = 1) -> str:
     """Render a nested config object as Markdown headings and list items."""
+
     def append_scalar_list(lines: list[str], label: str, values: list[object]) -> None:
         if values:
             lines.append(f"- {label}:")

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Generic, TypeVar
+from typing import Callable, Generic, TypeVar
 
 from .core import InteractionContext
 from .matching import normalize_text, rank_choices
@@ -18,8 +18,9 @@ def make_status_snapshot(
     component: ChoiceInput[ValueT],
     filtered: list[Choice[ValueT] | Choice[str]],
     pager: Pager[Choice[ValueT] | Choice[str]],
-) -> callable:
+) -> Callable[[], str]:
     """Bind the current filtered list and pager for command help callbacks."""
+
     def status_snapshot() -> str:
         return component.status_text(filtered, pager)
 
@@ -29,8 +30,9 @@ def make_status_snapshot(
 def make_details_snapshot(
     component: ChoiceInput[ValueT],
     pager: Pager[Choice[ValueT] | Choice[str]],
-) -> callable:
+) -> Callable[[], str]:
     """Bind the current pager for command detail callbacks."""
+
     def details_snapshot() -> str:
         return component.page_text(pager.current())
 
