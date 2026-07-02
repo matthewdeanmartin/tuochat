@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import getpass
 import io
+import sys
 from contextlib import ExitStack, contextmanager, redirect_stderr, redirect_stdout
 from contextvars import ContextVar
 from typing import Any, Protocol
@@ -228,6 +229,8 @@ ACTIVE_BACKEND: InputBackend | None = None
 
 
 def make_backend() -> InputBackend:
+    if not sys.stdin.isatty():
+        return ReadlineBackend()
     try:
         return PromptToolkitBackend()
     except (ImportError, ModuleNotFoundError):
