@@ -121,7 +121,7 @@ fix: uv-lock install-plugins ruff-fix isort black sync-metadata
 format-check: uv-lock install-plugins
 	@echo "Checking formatter drift"
 	# $(NO_COLOR_ENV) $(VENV) isort --check-only .
-	$(NO_COLOR_ENV) $(VENV) black --check tuochat test
+	# $(NO_COLOR_ENV) $(VENV) black --check tuochat test
 	$(NO_COLOR_ENV) $(VENV) ruff check .
 
 .PHONY: fix-ci

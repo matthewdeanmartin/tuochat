@@ -34,6 +34,7 @@ def get_os_file_handle(msvcrt_module: Any, file_descriptor: int) -> int:
     """Return a Windows OS handle for a Python file descriptor."""
     return msvcrt_module.get_osfhandle(file_descriptor)
 
+
 # ---------------------------------------------------------------------------
 # Availability gate
 # ---------------------------------------------------------------------------
