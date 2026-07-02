@@ -297,7 +297,7 @@ class MultiSelectInput(Generic[ValueT]):
             if text.strip().isdigit():
                 index = int(text.strip()) - 1
                 page_items = pager.current().items
-                if not (0 <= index < len(page_items)):
+                if not (0 <= index < len(page_items)):  # pylint: disable=superfluous-parens
                     context.fail("Pick a listed number or name.")
                     continue
                 choice = page_items[index]

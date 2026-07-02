@@ -155,7 +155,7 @@ class ErrorLogTabView:
 
         for col, header, width in zip(self.COLUMNS, self.COLUMN_HEADERS, self.COLUMN_WIDTHS):
             self.tree.heading(col, text=header)
-            self.tree.column(col, width=width, minwidth=40, stretch=(col == "message"))
+            self.tree.column(col, width=width, minwidth=40, stretch=col == "message")
 
         # Tag colors for severity
         self.tree.tag_configure("WARNING", foreground=COLOR_WARNING)

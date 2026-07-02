@@ -246,7 +246,7 @@ class GitStatusTab:
         if rc != 0:
             rc, diff = run_git("diff", cwd=status.root)
         if not diff:
-            rc2, diff = run_git("status", "--short", cwd=status.root)
+            _, diff = run_git("status", "--short", cwd=status.root)
             label = "Git status (no diff available)"
         else:
             label = f"Git diff ({status.branch or 'HEAD'})"

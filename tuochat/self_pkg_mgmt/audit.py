@@ -101,9 +101,9 @@ AuditRunner = Callable[[], tuple[list[Vulnerability], Optional[str]]]
 def runner_pip_audit() -> tuple[list[Vulnerability], str | None]:
     if not which("pip-audit"):
         return [], None
-    stdout, stderr, rc = run_cmd(["pip-audit", "--format", "json"])
+    stdout, _, rc = run_cmd(["pip-audit", "--format", "json"])
     if rc is None:
-        stdout, stderr, rc = run_cmd([sys.executable, "-m", "pip_audit", "--format", "json"])
+        stdout, _, rc = run_cmd([sys.executable, "-m", "pip_audit", "--format", "json"])
     if rc is None:
         return [], None
     return parse_pip_audit(stdout), "pip-audit"
@@ -112,7 +112,7 @@ def runner_pip_audit() -> tuple[list[Vulnerability], str | None]:
 def runner_safety() -> tuple[list[Vulnerability], str | None]:
     if not which("safety"):
         return [], None
-    stdout, stderr, rc = run_cmd(["safety", "scan", "--output", "json"])
+    stdout, _, rc = run_cmd(["safety", "scan", "--output", "json"])
     if rc is None:
         return [], None
     return parse_safety(stdout), "safety"
@@ -121,7 +121,7 @@ def runner_safety() -> tuple[list[Vulnerability], str | None]:
 def runner_uv_audit() -> tuple[list[Vulnerability], str | None]:
     if not which("uv"):
         return [], None
-    stdout, stderr, rc = run_cmd(["uv", "pip", "audit", "--format", "json"])
+    stdout, _, rc = run_cmd(["uv", "pip", "audit", "--format", "json"])
     if rc is None:
         return [], None
     return parse_pip_audit(stdout), "uv-audit"

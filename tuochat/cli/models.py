@@ -1,3 +1,5 @@
+"""Shared data models for the REPL and CLI layers."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field

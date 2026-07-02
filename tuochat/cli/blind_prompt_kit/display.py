@@ -366,7 +366,7 @@ class TableViewer:
             return None
         row_number = int(match.group(1))
         column_name = match.group(2).strip()
-        if not (1 <= row_number <= len(self.rows)):
+        if not (1 <= row_number <= len(self.rows)):  # pylint: disable=superfluous-parens
             return None
         row = dict(self.rows[row_number - 1])
         for column in self.columns:

@@ -408,7 +408,7 @@ def build_openrouter_provider(cfg: TuochatConfig, *, model_override: str | None 
     """Construct an OpenRouter provider from the active config."""
     if not cfg.openrouter.api_key:
         raise OpenRouterAPIError(
-            "OpenRouter API key is not configured. Set OPENROUTER_API_KEY or run " "`tuochat openrouter login`."
+            "OpenRouter API key is not configured. Set OPENROUTER_API_KEY or run `tuochat openrouter login`."
         )
     models: list[str]
     if model_override:

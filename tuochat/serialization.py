@@ -1,3 +1,5 @@
+"""JSON and TOML serialization helpers with optional fast-path backends."""
+
 from __future__ import annotations
 
 import json
