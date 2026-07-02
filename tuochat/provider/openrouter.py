@@ -30,7 +30,7 @@ class OpenRouterAPIError(RuntimeError):
 def import_openrouter_sdk() -> Any:
     """Import the official openrouter SDK or raise a friendly error."""
     try:
-        import openrouter  # noqa: PLC0415
+        import openrouter  # type: ignore[import-not-found]  # noqa: PLC0415
     except ImportError as exc:
         raise OpenRouterUnavailableError(
             "The 'openrouter' package is not installed. Install the extra with: pip install 'tuochat[openrouter]'"

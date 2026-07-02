@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import time
 from types import ModuleType
+from typing import Any
 
 from tuochat.sandbox.adapters import base, lupa_adapter, miniracer_adapter
 from tuochat.sandbox.protocol import CodeInput, CodeOutput
@@ -50,7 +51,7 @@ class FakeMiniRacer:
     def __init__(self) -> None:
         self.stdout: list[str] = []
         self.did_emit = False
-        self.result = None
+        self.result: Any = None
 
     def eval(self, code: str, timeout: int | None = None):  # noqa: ARG002
         if code == miniracer_adapter.JS_BOOTSTRAP:

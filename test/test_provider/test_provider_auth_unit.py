@@ -6,6 +6,7 @@ import socket
 import threading
 import time
 import urllib.request
+from email.message import Message
 
 import pytest
 
@@ -142,7 +143,7 @@ def test_post_token_request_rewraps_http_errors(monkeypatch):
             url=request.full_url,
             code=400,
             msg="bad request",
-            hdrs={},
+            hdrs=Message(),
             fp=io.BytesIO(b'{"error":"invalid_grant"}'),
         )
 

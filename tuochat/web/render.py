@@ -331,7 +331,7 @@ def extract_html_trafilatura(html_bytes: bytes, charset: str) -> tuple[str, Page
     Returns None if trafilatura is not installed or extraction fails.
     """
     try:
-        import trafilatura  # type: ignore[import-untyped]
+        import trafilatura  # type: ignore[import-not-found,import-untyped]
     except ImportError:
         logger.debug("extract_html_trafilatura: trafilatura not installed, skipping")
         return None
@@ -378,7 +378,7 @@ def extract_html_readability(html_bytes: bytes, charset: str) -> tuple[str, Page
     Returns None if readability-lxml is not installed or extraction fails.
     """
     try:
-        from readability import Document  # type: ignore[import-untyped]
+        from readability import Document  # type: ignore[import-not-found,import-untyped]
     except ImportError:
         logger.debug("extract_html_readability: readability-lxml not installed, skipping")
         return None
@@ -418,7 +418,7 @@ def extract_html_html2text(html_bytes: bytes, charset: str) -> tuple[str, PageMe
     Returns None if html2text is not installed or extraction fails.
     """
     try:
-        import html2text as h2t  # type: ignore[import-untyped]
+        import html2text as h2t  # type: ignore[import-not-found,import-untyped]
     except ImportError:
         logger.debug("extract_html_html2text: html2text not installed, skipping")
         return None

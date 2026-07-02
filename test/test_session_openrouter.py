@@ -2,23 +2,29 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
+from tuochat.cli.models import ReplState
 from tuochat.cli.session import build_openrouter_provider, conversation_history_for_openrouter
 from tuochat.config import TuochatConfig
 from tuochat.models import Conversation
+from tuochat.persistence.store import NullConversationStore
+from tuochat.provider.eliza import ElizaProvider
 from tuochat.provider.openrouter import OpenRouterAPIError
 
 
-def make_state_stub(conversation: Conversation) -> object:
-    """Minimal stand-in exposing only the attribute helpers need."""
-
-    class StateStub:
-        pass
-
-    stub = StateStub()
-    stub.conv = conversation
-    return stub
+def make_state_stub(conversation: Conversation) -> ReplState:
+    """Build a typed state object exposing the conversation history."""
+    cfg = TuochatConfig()
+    return ReplState(
+        conv=conversation,
+        store=NullConversationStore(Path("unused.db")),
+        provider=ElizaProvider(),
+        cfg=cfg,
+        streaming=True,
+    )
 
 
 def test_build_openrouter_provider_requires_api_key():

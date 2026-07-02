@@ -81,7 +81,7 @@ class LupaAdapter:
         memory_limit_mb: int | None = None,  # noqa # nosec # pylint: disable=unused-argument
     ) -> dict[str, Any]:
         # pylint: disable=no-name-in-module
-        from lupa import LuaRuntime
+        from lupa import LuaRuntime  # type: ignore[import-not-found,import-untyped]
 
         if len(code.encode("utf-8")) > CODE_MAX_BYTES:
             raise SerializationError(f"code exceeds {CODE_MAX_BYTES} byte limit")

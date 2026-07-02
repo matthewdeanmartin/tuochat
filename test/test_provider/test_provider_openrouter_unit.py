@@ -261,6 +261,7 @@ def test_chat_non_streaming_returns_full_text(monkeypatch: pytest.MonkeyPatch):
     provider = OpenRouterProvider(api_key="sk-test", models=["x"])
     result = list(provider.chat("hi", streaming=False))
     assert result == ["complete answer"]
+    assert chat.last_kwargs is not None
     assert chat.last_kwargs["stream"] is False
 
 

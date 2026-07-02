@@ -349,7 +349,7 @@ class FakeDukpyInterpreter:
         self.did_emit = False
         self.result = None
 
-    def evaljs(self, code: str, **kwargs) -> str:  # type: ignore[override]
+    def evaljs(self, code: str, **kwargs) -> object:  # type: ignore[override]
         # Handle the fixed queries the adapter makes after user code runs.
         if code == "globalThis.__didEmit":
             return self.did_emit
@@ -370,7 +370,7 @@ def test_dukpy_adapter_happy_path():
     fake_ctx.result = 42
 
     with patch.dict(sys.modules, {"dukpy": MagicMock()}):
-        import dukpy
+        import dukpy  # type: ignore[import-untyped]
 
         dukpy.JSInterpreter = lambda: fake_ctx
 

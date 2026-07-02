@@ -16,7 +16,17 @@ disable=
     too-many-ancestors,
     duplicate-code,
     import-error,
-    logging-fstring-interpolation
+    logging-fstring-interpolation,
+    too-many-return-statements,
+    import-outside-toplevel,
+    broad-exception-caught,
+    missing-function-docstring,
+    missing-class-docstring,
+    c-extension-no-member,
+    global-statement,
+    protected-access,
+    unnecessary-ellipsis
+
 
 [FORMAT]
 max-line-length=170

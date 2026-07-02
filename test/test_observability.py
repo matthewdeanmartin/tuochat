@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -49,7 +50,7 @@ def make_row(
 
 
 @pytest.fixture()
-def store(tmp_path: Path) -> ConversationStore:
+def store(tmp_path: Path) -> Iterator[ConversationStore]:
     with ConversationStore(tmp_path / "obs_test.db") as s:
         yield s
 

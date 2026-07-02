@@ -50,7 +50,7 @@ class DukpyAdapter:
         timeout_ms: int = 500,
         memory_limit_mb: int | None = None,  # noqa # nosec # pylint: disable=unused-argument
     ) -> dict[str, Any]:
-        import dukpy
+        import dukpy  # type: ignore[import-not-found]
 
         if len(code.encode("utf-8")) > CODE_MAX_BYTES:
             raise SerializationError(f"code exceeds {CODE_MAX_BYTES} byte limit")

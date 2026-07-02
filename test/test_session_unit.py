@@ -15,6 +15,8 @@ from tuochat.cli.models import ReplState
 from tuochat.config import TuochatConfig
 from tuochat.constants import NO_CODE_MODE_REPLACEMENT
 from tuochat.models import Conversation, Message, Role
+from tuochat.persistence.store import ConversationStore, NullConversationStore
+from tuochat.provider.eliza import ElizaProvider
 
 
 def make_cfg(tmp_path: Path) -> TuochatConfig:
@@ -32,12 +34,12 @@ def make_state(
     *,
     cfg: TuochatConfig | None = None,
     conv: Conversation | None = None,
-    store: object | None = None,
+    store: ConversationStore | NullConversationStore | None = None,
 ) -> ReplState:
     return ReplState(
         conv=conv or Conversation(title="Session Test"),
-        store=store or MagicMock(),
-        provider=object(),
+        store=store or NullConversationStore(tmp_path / "null.db"),
+        provider=ElizaProvider(),
         cfg=cfg or make_cfg(tmp_path),
         streaming=True,
         command_log=[],

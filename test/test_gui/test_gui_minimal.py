@@ -56,7 +56,7 @@ from tuochat.models import Conversation, ConversationSearchResult, Message, Role
 
 class FakeButton:
     def __init__(self) -> None:
-        self.state = None
+        self.state: str | None = None
 
     def configure(self, *, state: str) -> None:
         self.state = state

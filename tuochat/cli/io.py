@@ -123,9 +123,9 @@ class PromptToolkitBackend:
     supports_history = True
 
     def __init__(self) -> None:
-        import prompt_toolkit  # noqa: F401  # pylint: disable=unused-import
-        from prompt_toolkit import PromptSession
-        from prompt_toolkit.history import FileHistory, InMemoryHistory
+        import prompt_toolkit  # type: ignore[import-not-found]  # noqa: F401  # pylint: disable=unused-import
+        from prompt_toolkit import PromptSession  # type: ignore[import-not-found]
+        from prompt_toolkit.history import FileHistory, InMemoryHistory  # type: ignore[import-not-found]
 
         self.PromptSession = PromptSession
         self.FileHistory = FileHistory
@@ -134,7 +134,7 @@ class PromptToolkitBackend:
         self.multiline_session: Any = None
 
     def configure(self, cfg: Any) -> None:
-        from prompt_toolkit.completion import Completer, Completion
+        from prompt_toolkit.completion import Completer, Completion  # type: ignore[import-not-found]
 
         from tuochat.constants import KNOWN_SLASH_COMMANDS
 
@@ -171,8 +171,8 @@ class PromptToolkitBackend:
         )
 
         # Multiline session — emacs-style (prompt-toolkit default), Alt+S to submit
-        from prompt_toolkit.filters import is_done
-        from prompt_toolkit.key_binding import KeyBindings
+        from prompt_toolkit.filters import is_done  # type: ignore[import-not-found]
+        from prompt_toolkit.key_binding import KeyBindings  # type: ignore[import-not-found]
 
         submit_kb = KeyBindings()
 

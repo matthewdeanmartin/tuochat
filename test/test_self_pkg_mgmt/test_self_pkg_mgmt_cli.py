@@ -35,7 +35,7 @@ def sample_report(*, actionable: bool = True, vulnerability_fix: bool = False) -
         is_upgrade_available=actionable,
         is_in_cooloff=False,
     )
-    vulnerabilities = ()
+    vulnerabilities: tuple[Vulnerability, ...] = ()
     if vulnerability_fix:
         vulnerabilities = (
             Vulnerability(

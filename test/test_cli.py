@@ -2246,8 +2246,8 @@ def make_slash_command_state(tmp_path, *, system_prompt: str | None = None) -> R
     cfg.log_dir = tmp_path / "logs"
     return ReplState(
         conv=Conversation(title="Slash Command Test", system_prompt=system_prompt),
-        store=object(),
-        provider=object(),
+        store=NullConversationStore(tmp_path / "null.db"),
+        provider=ElizaProvider(),
         cfg=cfg,
         streaming=True,
     )

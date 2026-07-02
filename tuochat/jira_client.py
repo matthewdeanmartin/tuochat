@@ -55,7 +55,7 @@ def infer_deployment(host: str) -> str:
 def get_jira_module():
     """Import and return the top-level jira module, or raise ImportError with a hint."""
     try:
-        import jira as jira_module  # noqa: PLC0415
+        import jira as jira_module  # type: ignore[import-not-found]  # noqa: PLC0415
 
         return jira_module
     except ImportError as exc:
