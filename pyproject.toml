@@ -1,6 +1,6 @@
 [project]
 name = "tuochat"
-version = "0.8.0"
+version = "0.8.1"
 description = "Nonagentic coding client for GitLab(tm) Duo"
 readme = "README.md"
 authors = [{ name = "Matthew Martin", email = "matthewdeanmartin@gmail.com" }]
