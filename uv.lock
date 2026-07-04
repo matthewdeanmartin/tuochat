@@ -10,6 +10,9 @@ resolution-markers = [
     "python_full_version < '3.9.2'",
 ]
 
+[options]
+exclude-newer = "2026-07-02T13:06:30Z"
+
 [[package]]
 name = "aiohappyeyeballs"
 version = "2.6.1"
@@ -5939,7 +5942,7 @@ wheels = [
 
 [[package]]
 name = "tuochat"
-version = "0.8.0"
+version = "0.8.1"
 source = { editable = "." }
 dependencies = [
     { name = "keyring" },
