@@ -104,7 +104,7 @@ dev = [
     # reports
 
     # build
-    "metametameta>=0.1.3; python_version >= '3.9'",
+    "metametameta>=0.1.14; python_version >= '3.9'",
     "hatchling",
     "ruff>=0.15.8",
     "pylint",
