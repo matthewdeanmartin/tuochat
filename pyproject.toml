@@ -24,6 +24,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
 ]
 
 [project.urls]
@@ -50,7 +51,7 @@ weak-sandbox = [
 ]
 fast = [
     "orjson",
-    "rtoml; python_version < '3.14'",
+    "rtoml; python_version < '3.15'",
 ]
 antitamper = [
     "bagit",
@@ -66,7 +67,7 @@ all = [
     "jira>=3.10.5; python_version >= '3.10'",
     "openrouter>=0.9.1; python_full_version >= '3.9.2'",
     "orjson",
-    "rtoml; python_version < '3.14'",
+    "rtoml; python_version < '3.15'",
     "bagit",
     "pip-audit",
     "mini-racer",
@@ -90,7 +91,8 @@ web = [
 
 [dependency-groups]
 dev = [
-    "keepachangelog-manager-fork[all]>=6.6.0; python_version < '3.15'",
+    "keepachangelog-manager-fork[all]>=6.6.0; python_version < '3.15'",  # [all] pulls google-re2, no cp315 wheel/sdist build on Windows
+    "keepachangelog-manager-fork>=6.6.0; python_version >= '3.15'",  # pure-Python base still provides changelogmanager on 3.15
     # "git2md; python_version >= '3.10'",
     # "pyclean; python_version >= '3.12'",
     # "strip-docs>=1.0; python_version >= '3.12'",
@@ -155,7 +157,7 @@ include = [
     "tuochat/templates/**/*.md",
     "tuochat/schemas/*",
     "tuochat/py.typed",
-    "/README.md", "LICENSE",
+    "/README.md", "/LICENSE",
 ]
 
 exclude = [
@@ -171,7 +173,7 @@ include = [
     "tuochat/templates/**/*.md",
     "tuochat/schemas/*",
     "tuochat/py.typed",
-    "/README.md", "LICENSE",
+    "/README.md", "/LICENSE",
 ]
 
 

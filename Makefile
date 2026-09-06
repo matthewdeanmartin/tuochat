@@ -398,3 +398,35 @@ clean-tuochat-dry:
 tuochat-logs:
 	@echo "Recent pipeline runs:"
 	$(VENV) tuochat logs
+
+# ── Python 3.15 trial (dedicated venv; never touches .venv) ──────────────────
+# See python315.md for the full procedure and rationale. hypothesis is pinned
+# separately because the default lock resolves to 6.155.7, which has no cp315
+# wheel; >=6.160.0 does. rtoml is excluded (pyo3<=0.26 caps at 3.14).
+
+PY315 := 3.15.0rc2
+VENV315 := .venv315rc2
+PY315_EXE := $(VENV315)/Scripts/python.exe
+
+.PHONY: venv315
+venv315:
+	@echo "Creating Python $(PY315) trial venv at $(VENV315)"
+	@test -x $(PY315_EXE) || uv venv $(VENV315) --python $(PY315)
+	uv pip install -e ".[gitlab,antitamper,selfcheck,js-miniracer,js-dukpy]" \
+		pytest pytest-cov pytest-timeout pytest-mock pytest-xdist pytest-benchmark \
+		"hypothesis>=6.160.0" --python $(PY315_EXE)
+
+.PHONY: venv315-clean
+venv315-clean:
+	@echo "Recreating Python $(PY315) trial venv from scratch"
+	uv venv $(VENV315) --python $(PY315) --clear
+	@$(MAKE) venv315
+
+.PHONY: test315
+test315: venv315
+	@echo "Running unit tests on Python $(PY315)"
+	$(PY315_EXE) -m pytest test -q --timeout=60 -p no:randomly
+
+.PHONY: check315
+check315: test315
+	@echo "Python $(PY315) checks passed."
