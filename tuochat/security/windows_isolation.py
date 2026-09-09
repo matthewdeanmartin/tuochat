@@ -160,7 +160,10 @@ def create_job_object(limits: JobLimits):  # type: ignore[no-untyped-def]
     """Create a Job Object with the given *limits* and return its handle."""
     import win32job  # noqa: F811
 
-    job = win32job.CreateJobObject(None, "")  # type: ignore[func-returns-value]
+    # types-pywin32 annotates CreateJobObject as returning None; it actually
+    # returns the job handle.  Bind through an int-typed name so the handle
+    # uses below type-check against the real signature.
+    job: int = win32job.CreateJobObject(None, "")  # type: ignore[func-returns-value,assignment]
     info = win32job.QueryInformationJobObject(
         job,
         win32job.JobObjectExtendedLimitInformation,

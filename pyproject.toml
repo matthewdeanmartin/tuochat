@@ -284,6 +284,42 @@ convention = "google"
 
 
 
+[tool.ty.rules]
+# Optional extras (jira, openrouter, lua/js sandboxes, web scrapers) and the
+# 3.9-only tomli backport are imported inside try/except ImportError guards.
+# They are intentionally absent from the default dev environment.
+unresolved-import = "ignore"
+
+[[tool.ty.overrides]]
+# types-pywin32 is narrower than the real Win32 API: several handle and
+# security-attribute parameters accept NULL (None), and CreateJobObject is
+# annotated as returning None though it returns a handle.  This module is
+# Windows-only and already guarded by runtime capability checks.
+include = ["tuochat/security/windows_isolation.py"]
+
+[tool.ty.overrides.rules]
+invalid-argument-type = "ignore"
+invalid-assignment = "ignore"
+
+[[tool.ty.overrides]]
+# readline is absent on Windows; the backend probes for it at runtime and
+# holds it in an Any-typed attribute, so attribute checks are not meaningful.
+include = ["tuochat/cli/io.py"]
+
+[tool.ty.overrides.rules]
+unresolved-attribute = "ignore"
+
+[[tool.ty.overrides]]
+# tkinter's stubs type configure() as a fixed-keyword method, but Tk widgets
+# genuinely accept these options at runtime and the calls are already guarded
+# by `except tk.TclError`.  mypy silences these via `type: ignore[call-arg]`,
+# which ty does not honour.
+include = ["tuochat/gui/**"]
+
+[tool.ty.overrides.rules]
+unknown-argument = "ignore"
+no-matching-overload = "ignore"
+
 [tool.coverage.report]
 # Regexes for lines to exclude from consideration
 exclude_also = [

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixed
+- Interactive input backend no longer leaks between callers. A stub or fallback backend installed by one caller could persist and break later prompts with an AttributeError.
+- Multiline prompt support is now part of the input backend interface, so a backend without it fails clearly instead of raising AttributeError.
+- Windows job-object isolation is typed against the real pywin32 return values, correcting the job handle passed to QueryInformationJobObject and SetInformationJobObject.
+- Web article extraction always yields text, even when trafilatura returns a metadata object whose text field is empty.
+
+### Changed
+- Python 3.15 is now verified in CI: the tox matrix runs 3.11, 3.13 and 3.15 on Linux and Windows on every push and pull request.
+- The ty type checker now runs as part of make verify and the CI quality gates.
+
 ## [0.8.1] - 2026-07-02
 ### Fixed
 - Bug fixes. Surface openrouter

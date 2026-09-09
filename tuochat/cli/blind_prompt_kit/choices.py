@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Callable, Generic, TypeVar
+from typing import Callable, Generic, TypeVar, cast
 
 from .core import InteractionContext
 from .matching import normalize_text, rank_choices
@@ -72,7 +72,10 @@ class ChoiceInput(Generic[ValueT]):
 
     def __post_init__(self) -> None:
         """Prepare normalized choices."""
-        self.choices = coerce_choices(self.options)
+        # coerce_choices() infers its type var as `ValueT | str` from the
+        # Sequence[Choice[ValueT] | str] argument; the extra `str` arm is the
+        # bare-string case it already normalizes into Choice[str].
+        self.choices = cast("list[Choice[ValueT] | Choice[str]]", coerce_choices(self.options))
 
     def run(self, context: InteractionContext) -> ValueT | str:
         """Run the picker."""
@@ -254,7 +257,10 @@ class MultiSelectInput(Generic[ValueT]):
 
     def __post_init__(self) -> None:
         """Prepare normalized choices."""
-        self.choices = coerce_choices(self.options)
+        # coerce_choices() infers its type var as `ValueT | str` from the
+        # Sequence[Choice[ValueT] | str] argument; the extra `str` arm is the
+        # bare-string case it already normalizes into Choice[str].
+        self.choices = cast("list[Choice[ValueT] | Choice[str]]", coerce_choices(self.options))
 
     def run(self, context: InteractionContext) -> list[ValueT | str]:
         """Run the multi-select prompt."""

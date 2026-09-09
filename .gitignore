@@ -221,3 +221,9 @@ __marimo__/
 .idea
 /bag-info.txt
 junit.xml
+
+# pytest-benchmark run data
+.benchmarks/
+
+# stale project-local uv cache (real cache lives in AppData)
+.uv-cache/

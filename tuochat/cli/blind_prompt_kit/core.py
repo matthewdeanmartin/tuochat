@@ -138,7 +138,7 @@ class InteractionContext:
         if provider is None:
             self.say(missing)
             return True
-        text = provider() if callable(provider) else provider
+        text = provider if isinstance(provider, str) else provider()
         if not text:
             self.say(missing)
             return True

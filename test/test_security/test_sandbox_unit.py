@@ -326,12 +326,26 @@ def test_dukpy_runtime_cannot_write_files_via_available_or_common_host_apis(tmp_
             JSON.stringify(writeProbe);
             """))
 
-    assert attempt_errors == [
-        "require_fs:Error: cannot find module: fs",
-        "process_mainModule:TypeError: cannot read property 'require' of undefined",
-        "deno_write:ReferenceError: identifier 'Deno' undefined",
-        "bun_write:ReferenceError: identifier 'Bun' undefined",
-    ]
+    # Assert on the security property and the error *kind*, not the engine's
+    # exact wording: duktape rephrases these messages between releases (e.g.
+    # "identifier 'Deno' undefined" became "Deno is not defined"), which used
+    # to fail this test without any loss of sandboxing.
+    labels = [entry.split(":", 1)[0] for entry in attempt_errors]
+    assert labels == ["require_fs", "process_mainModule", "deno_write", "bun_write"]
+
+    # Every probe must have raised; none may report success.
+    assert not [entry for entry in attempt_errors if entry.endswith(":ok")]
+
+    expected_error_types = {
+        "require_fs": "Error",
+        "process_mainModule": "TypeError",
+        "deno_write": "ReferenceError",
+        "bun_write": "ReferenceError",
+    }
+    for entry in attempt_errors:
+        label, _, detail = entry.partition(":")
+        assert detail.strip().startswith(expected_error_types[label]), entry
+
     assert not output_path.exists()
 
 

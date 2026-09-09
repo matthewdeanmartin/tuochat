@@ -9,7 +9,9 @@ from test_perf.conftest import run_cli_command
 FAST_CASES = [
     pytest.param(("--help",), "usage: tuochat", id="root-help"),
     pytest.param(("--version",), ".", id="version"),
-    pytest.param(("chat", "--help"), "--prompt PROMPT", id="chat-help"),
+    # `chat` is a subcommand group; --prompt now lives on `chat new`.
+    pytest.param(("chat", "--help"), "{new,send,show,latest}", id="chat-help"),
+    pytest.param(("chat", "new", "--help"), "Read the prompt from a file", id="chat-new-help"),
     pytest.param(("context", "--help"), "custom-instructions", id="context-help"),
     pytest.param(("headless", "--help"), "Start a new non-interactive conversation", id="headless-help"),
 ]

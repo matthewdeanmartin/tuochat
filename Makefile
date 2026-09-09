@@ -205,7 +205,7 @@ smoke: uv-lock install-plugins smoke-only
 test: pytest smoke
 
 .PHONY: verify
-verify: ruff mypy pylint bandit test
+verify: ruff mypy ty pylint bandit test
 
 
 .PHONY: repro
@@ -215,7 +215,7 @@ repro: clean uv-lock install-plugins
 	$(VENV) bash ./scripts/basic_checks.sh
 
 .PHONY: bugs
-bugs: fix-ci ruff mypy pylint bandit repro smoke
+bugs: fix-ci ruff mypy ty pylint bandit repro smoke
 
 .PHONY: benchmark
 benchmark: uv-lock install-plugins

@@ -36,6 +36,10 @@ class InputBackend(Protocol):
 
     def read_line(self, prompt: str) -> str: ...
 
+    def read_multiline(self, prompt: str) -> str:
+        """Read a whole multiline draft.  Only meaningful when supports_multiline."""
+        ...
+
     def configure(self, cfg: Any) -> None: ...
 
     def shutdown(self) -> None: ...
@@ -52,6 +56,10 @@ class ReadlineBackend:
         self.readline_mod: Any = None
         self.history_path: str | None = None
         self.configured = False
+
+    def read_multiline(self, prompt: str) -> str:
+        """Not supported here; callers must check supports_multiline first."""
+        raise NotImplementedError("ReadlineBackend does not support multiline input")
 
     def configure(self, cfg: Any) -> None:
         if self.configured:
@@ -221,11 +229,15 @@ class PromptToolkitBackend:
         pass  # prompt-toolkit FileHistory flushes on each append
 
 
-# Singleton backend, selected lazily on first configure call.
-# Keep both names for compatibility with older tests and callers that
-# monkeypatch the module-level backend directly.
+# Singleton backend, selected lazily on first use.
+#
+# This is deliberately a single piece of state.  An earlier version kept a
+# second alias (ACTIVE_BACKEND) that get_backend() wrote to as a side effect.
+# Anything that swapped one name -- notably monkeypatch, which only restores
+# the name it was given -- left the other pointing at the override, so a stub
+# backend leaked out of the test that installed it and broke every later test
+# that read a prompt.  Use set_backend()/reset_backend() to override.
 active_backend: InputBackend | None = None
-ACTIVE_BACKEND: InputBackend | None = None
 
 
 def make_backend() -> InputBackend:
@@ -239,18 +251,25 @@ def make_backend() -> InputBackend:
 
 def get_backend() -> InputBackend:
     """Return the active backend (may be unconfigured until configure_interactive_io is called)."""
-    global active_backend, ACTIVE_BACKEND  # noqa: PLW0603
-    if active_backend is None and ACTIVE_BACKEND is not None:
-        active_backend = ACTIVE_BACKEND
+    global active_backend  # noqa: PLW0603
     if active_backend is None:
         active_backend = make_backend()
-    ACTIVE_BACKEND = active_backend
     return active_backend
+
+
+def set_backend(backend: InputBackend | None) -> None:
+    """Install a specific backend.  Passing None restores lazy selection."""
+    global active_backend  # noqa: PLW0603
+    active_backend = backend
+
+
+def reset_backend() -> None:
+    """Drop the active backend so the next get_backend() picks a new one."""
+    set_backend(None)
 
 
 def configure_interactive_io(cfg: Any = None) -> None:
     """Initialise the active backend (history, completion).  Call once at CLI startup."""
-    global active_backend, ACTIVE_BACKEND  # noqa: PLW0603
     backend = get_backend()
     try:
         backend.configure(cfg)
@@ -258,9 +277,9 @@ def configure_interactive_io(cfg: Any = None) -> None:
         # Terminal init failed (e.g. prompt-toolkit on a non-console Windows terminal).
         # Fall back to the readline backend and configure that instead.
         if not isinstance(backend, ReadlineBackend):
-            active_backend = ReadlineBackend()
-            ACTIVE_BACKEND = active_backend
-            active_backend.configure(cfg)
+            fallback = ReadlineBackend()
+            set_backend(fallback)
+            fallback.configure(cfg)
 
 
 def shutdown_interactive_io() -> None:

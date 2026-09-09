@@ -190,7 +190,7 @@ def read_user_message_multiline(*, quiet: bool = False) -> tuple[str | None, boo
     backend = get_backend()
     prompt = "you> " if quiet else "you (Alt+S to submit)>\n"
     try:
-        text = backend.read_multiline(prompt)  # type: ignore[attr-defined]
+        text = backend.read_multiline(prompt)
     except KeyboardInterrupt:
         print()
         print(MESSAGE_CANCELLED_HINT, file=sys.stderr)

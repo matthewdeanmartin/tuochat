@@ -18,7 +18,9 @@ except ImportError:
     JSONDecodeError = json.JSONDecodeError
 
 try:
-    import rtoml  # type: ignore
+    # rtoml has no 3.15 wheel (pyo3 caps at 3.14), so this import is expected
+    # to fail there and fall through to the stdlib tomllib path below.
+    import rtoml
 
     HAS_RTOML = True
     # rtoml.TomlParsingError is what it raises

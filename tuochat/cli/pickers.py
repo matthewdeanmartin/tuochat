@@ -50,14 +50,14 @@ logger = logging.getLogger("tuochat.cli")
 T = TypeVar("T")
 
 
-def conversation_modified_on_disk(conv: Conversation, cfg: object) -> bool:
+def conversation_modified_on_disk(conv: Conversation, cfg: TuochatConfig) -> bool:
     """Return True when the on-disk markdown is newer than the DB's updated_at timestamp."""
     try:
         from datetime import datetime, timezone
 
         from tuochat.persistence.archive import conversation_markdown_path
 
-        md = conversation_markdown_path(cfg, conv, create=False)  # type: ignore[arg-type]
+        md = conversation_markdown_path(cfg, conv, create=False)
         if not md.exists():
             return False
         db_time = conv.updated_at

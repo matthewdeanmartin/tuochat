@@ -762,7 +762,7 @@ def detect_partial_code_fence(content: str) -> tuple[str | None, str | None, str
         return None, None, None
     info = last_open.group(1).strip()
     language = info.split()[0] if info else None
-    partial = remaining[last_open.end() :].lstrip("\n") if last_open else None
+    partial = remaining[last_open.end() :].lstrip("\n")
     name_hint = filename_hint_before_block(content, last_open_pos) if last_open_pos > 0 else None
     return language, partial, name_hint
 

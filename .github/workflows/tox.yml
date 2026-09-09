@@ -2,6 +2,9 @@
 name: tox multi-version
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+  pull_request:
 permissions:
   contents: read
 jobs:
@@ -12,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ['3.11', '3.13']
+        python-version: ['3.11', '3.13', '3.15']
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
         with:
@@ -25,4 +28,8 @@ jobs:
       - name: Install tox + tox-uv
         run: uv tool install tox --with tox-uv
       - name: Run tox
-        run: tox -e py
+        # Use the version-specific env (e.g. py315) rather than the generic
+        # `py`, so 3.15 picks up [testenv:py315] and its reduced extras list.
+        # rtoml/lupa have no 3.15 wheels, so `extras = all` cannot resolve there.
+        run: tox -e py$(echo "${{ matrix.python-version }}" | tr -d .)
+        shell: bash

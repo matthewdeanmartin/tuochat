@@ -359,7 +359,7 @@ def extract_html_trafilatura(html_bytes: bytes, charset: str) -> tuple[str, Page
 
     # trafilatura may return a metadata-enriched object or plain str depending on version
     if hasattr(result, "text"):
-        content = result.text or ""
+        content = str(result.text or "")
     else:
         content = str(result)
 
