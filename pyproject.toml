@@ -126,6 +126,9 @@ dev = [
     "interrogate>=1.5.0",
     "pydoctest==0.2.1",
     "mdformat>=0.5.0",
+    # keeps YAML frontmatter (SKILL.md, docs headers) from being
+    # rewritten into a thematic break + heading by bare mdformat
+    "mdformat-frontmatter",
     "linkcheckmd>=1.4.0",
     "codespell>=2.2.6",
     "pyenchant>=3.2.2",
