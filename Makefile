@@ -146,6 +146,10 @@ mypy: uv-lock install-plugins mypy-only
 .PHONY: ty-only
 ty-only:
 	@echo "Running ty"
+	# CI runs on ubuntu; check that platform explicitly so a Windows-only pass
+	# cannot hide a Linux failure (e.g. os.startfile, which exists only on
+	# Windows). The local platform is checked too.
+	$(VENV) ty check --python-platform linux tuochat
 	$(VENV) ty check tuochat
 
 .PHONY: ty

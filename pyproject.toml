@@ -322,6 +322,10 @@ include = ["tuochat/gui/**"]
 [tool.ty.overrides.rules]
 unknown-argument = "ignore"
 no-matching-overload = "ignore"
+# os.startfile is Windows-only and guarded by a platform.system() check that
+# ty cannot narrow, so it reports the attribute as missing when checking with
+# a non-Windows platform assumption (as CI does on ubuntu).
+unresolved-attribute = "ignore"
 
 [tool.coverage.report]
 # Regexes for lines to exclude from consideration
