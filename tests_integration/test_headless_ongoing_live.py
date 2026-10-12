@@ -10,6 +10,7 @@ Run explicitly with:
 
 from __future__ import annotations
 
+import contextlib
 import os
 import subprocess
 import sys
@@ -69,10 +70,8 @@ def live_headless_env(tmp_path: Path) -> SimpleNamespace:
     try:
         yield SimpleNamespace(env=env, data_dir=data_dir, provider=provider)
     finally:
-        try:
+        with contextlib.suppress(Exception):
             provider.reset_conversation()
-        except Exception:
-            pass
 
 
 def run_headless_continue_ongoing(env: dict[str, str], prompt: str) -> dict[str, object]:
@@ -99,9 +98,7 @@ def run_headless_continue_ongoing(env: dict[str, str], prompt: str) -> dict[str,
         text=True,
         check=False,
     )
-    assert result.returncode == 0, (
-        "Headless Duo run failed.\n" f"STDOUT:\n{result.stdout}\n" f"STDERR:\n{result.stderr}"
-    )
+    assert result.returncode == 0, f"Headless Duo run failed.\nSTDOUT:\n{result.stdout}\nSTDERR:\n{result.stderr}"
     assert result.stderr == ""
     return json_loads(result.stdout)
 
@@ -109,14 +106,8 @@ def run_headless_continue_ongoing(env: dict[str, str], prompt: str) -> dict[str,
 def test_headless_continue_ongoing_recalls_prior_turn_without_local_replay(live_headless_env: SimpleNamespace) -> None:
     """Prove live Duo continuity across separate headless invocations."""
     nonce = f"ongoing-memory-{uuid.uuid4().hex[:12]}"
-    first_prompt = (
-        f"Memory test. Remember this exact code for a later question in this same conversation: {nonce}. "
-        "Reply with exactly STORED."
-    )
-    second_prompt = (
-        "What exact code did I ask you to remember earlier in this same conversation? "
-        "Reply with only the code and nothing else."
-    )
+    first_prompt = f"Memory test. Remember this exact code for a later question in this same conversation: {nonce}. Reply with exactly STORED."
+    second_prompt = "What exact code did I ask you to remember earlier in this same conversation? Reply with only the code and nothing else."
 
     first_payload = run_headless_continue_ongoing(live_headless_env.env, first_prompt)
     second_payload = run_headless_continue_ongoing(live_headless_env.env, second_prompt)

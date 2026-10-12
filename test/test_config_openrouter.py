@@ -100,12 +100,9 @@ def test_render_then_apply_round_trips_openrouter(tmp_path, monkeypatch: pytest.
     assert "rotate_models = true" in text
 
     # Re-parse via the toml loader path that apply_toml expects
-    import sys
 
-    if sys.version_info >= (3, 11):
-        import tomllib as toml_loader
-    else:
-        import tomli as toml_loader  # type: ignore[no-redef]
+    import tomllib as toml_loader  # type: ignore[no-redef]
+
     parsed = toml_loader.loads(text)
     fresh = TuochatConfig()
     apply_toml(fresh, parsed)

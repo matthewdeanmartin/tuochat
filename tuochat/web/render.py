@@ -12,6 +12,7 @@ skipped and the next one in the chain is tried.
 
 from __future__ import annotations
 
+import contextlib
 import html
 import html.parser
 import logging
@@ -318,10 +319,8 @@ def extract_metadata_stdlib(html_bytes: bytes, charset: str) -> PageMetadata:
         text = html_bytes.decode("utf-8", errors="replace")
 
     extractor = SimpleHTMLExtractor()
-    try:
+    with contextlib.suppress(Exception):
         extractor.feed(text)
-    except Exception:
-        pass
     return extractor.metadata
 
 
@@ -358,10 +357,7 @@ def extract_html_trafilatura(html_bytes: bytes, charset: str) -> tuple[str, Page
         return None
 
     # trafilatura may return a metadata-enriched object or plain str depending on version
-    if hasattr(result, "text"):
-        content = str(result.text or "")
-    else:
-        content = str(result)
+    content = str(result.text or "") if hasattr(result, "text") else str(result)
 
     content = content.strip()
     if not content:

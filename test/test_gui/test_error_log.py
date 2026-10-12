@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -39,7 +39,7 @@ def tk_root():
 
 
 def iso_now_minus(*, days: int = 0, hours: int = 0, minutes: int = 0) -> str:
-    timestamp = datetime.now(timezone.utc) - timedelta(days=days, hours=hours, minutes=minutes)
+    timestamp = datetime.now(UTC) - timedelta(days=days, hours=hours, minutes=minutes)
     return timestamp.replace(microsecond=0).isoformat()
 
 
@@ -119,7 +119,7 @@ def test_min_level_filter_excludes_lower(store):
 
 
 def test_entries_returned_newest_first(store):
-    now = datetime.now(timezone.utc).replace(microsecond=0)
+    now = datetime.now(UTC).replace(microsecond=0)
     timestamps = [
         (now - timedelta(hours=3)).isoformat(),
         (now - timedelta(hours=2)).isoformat(),

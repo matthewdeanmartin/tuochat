@@ -16,10 +16,7 @@ MESSAGE_CANCELLED_HINT = "Message cancelled. Use /quit or /exit to exit."
 def prompt_nonempty(prompt: str, *, default: str | None = None, secret: bool = False) -> str:
     """Prompt until a non-empty value is entered."""
     while True:
-        if secret:
-            value = read_prompt(prompt, secret=True)
-        else:
-            value = prompt_input(prompt)
+        value = read_prompt(prompt, secret=True) if secret else prompt_input(prompt)
         trimmed = value.strip()
         if trimmed:
             return trimmed
@@ -210,10 +207,11 @@ def read_user_message_linewise(*, quiet: bool = False) -> tuple[str | None, bool
     prompt_hint = submit_key_hint()
     while True:
         try:
-            if quiet:
-                prompt = "you> " if not lines else "> "
-            else:
-                prompt = f"you ({prompt_hint} to submit)> " if not lines else "... "
+            prompt = (
+                ("you> " if not lines else "> ")
+                if quiet
+                else f"you ({prompt_hint} to submit)> " if not lines else "... "
+            )
             line = read_prompt(prompt)
         except KeyboardInterrupt:
             print()
@@ -255,18 +253,18 @@ def prompt_missing_slash_command(command_name: str) -> bool | None:
 
 
 __all__ = [
-    "prompt_nonempty",
-    "prompt_text",
-    "readprompt_input",
-    "prompt_input",
-    "prompt_bool",
-    "prompt_int",
-    "dedupe_preserve_order",
-    "prompt_csv_list",
-    "prompt_pick_many",
-    "submit_key_hint",
-    "split_inline_eof_marker",
     "MESSAGE_CANCELLED_HINT",
-    "read_user_message",
+    "dedupe_preserve_order",
+    "prompt_bool",
+    "prompt_csv_list",
+    "prompt_input",
+    "prompt_int",
     "prompt_missing_slash_command",
+    "prompt_nonempty",
+    "prompt_pick_many",
+    "prompt_text",
+    "read_user_message",
+    "readprompt_input",
+    "split_inline_eof_marker",
+    "submit_key_hint",
 ]

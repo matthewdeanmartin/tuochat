@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any
 
 from .core import Component, InteractionContext
 from .exceptions import StepBack, StepSkip

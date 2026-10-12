@@ -10,7 +10,7 @@ from __future__ import annotations
 import logging
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Protocol
@@ -70,7 +70,7 @@ class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record as JSON."""
         entry = {
-            "ts": datetime.now(timezone.utc).isoformat(),
+            "ts": datetime.now(UTC).isoformat(),
             "level": record.levelname,
             "logger": record.name,
             "msg": record.getMessage(),
@@ -112,7 +112,7 @@ class SQLiteLogHandler(logging.Handler):
                 exc_type = record.exc_info[0].__name__
                 exc_value = str(record.exc_info[1])
                 exc_tb = "".join(traceback.format_tb(record.exc_info[2]))
-            recorded_at = datetime.now(timezone.utc).isoformat()
+            recorded_at = datetime.now(UTC).isoformat()
             store.save_error_log_entry(
                 recorded_at=recorded_at,
                 level=record.levelno,

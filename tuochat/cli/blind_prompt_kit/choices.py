@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
-from typing import Callable, Generic, TypeVar, cast
+from typing import Generic, TypeVar, cast
 
 from .core import InteractionContext
 from .matching import normalize_text, rank_choices
@@ -241,7 +241,7 @@ class EnumInput(ChoiceInput[ValueT]):
         descriptions = [f"{choice.label} means {choice.description}." for choice in self.choices if choice.description]
         if not descriptions:
             return super().help()
-        return "\n".join(descriptions + ["Pick by number or name."])
+        return "\n".join([*descriptions, "Pick by number or name."])
 
 
 @dataclass

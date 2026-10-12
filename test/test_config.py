@@ -68,13 +68,7 @@ def test_load_config_from_file(tmp_path):
     """Test loading config from a TOML file."""
     config_file = tmp_path / "config.toml"
     config_file.write_text(
-        '[gitlab]\nhost = "https://gitlab.example.com"\ntoken = "glpat-abc123"\n\n'
-        'user_agent = "custom-agent/9.9"\n\n'
-        "[chat]\n"
-        "timeout = 60\n"
-        "websocket_welcome_timeout = 25\n"
-        "websocket_subscription_timeout = 35\n"
-        "response_footer_warning_enabled = true\n"
+        '[gitlab]\nhost = "https://gitlab.example.com"\ntoken = "glpat-abc123"\n\nuser_agent = "custom-agent/9.9"\n\n[chat]\ntimeout = 60\nwebsocket_welcome_timeout = 25\nwebsocket_subscription_timeout = 35\nresponse_footer_warning_enabled = true\n'
     )
     with (
         patch("tuochat.config.load_dotenv"),
@@ -193,7 +187,7 @@ def test_load_config_ignores_legacy_age_personalization_field(tmp_path):
     """Legacy age personalization entries should load without affecting config shape."""
     config_file = tmp_path / "config.toml"
     config_file.write_text(
-        "[personalization]\n" "enabled = true\n" 'name = "Alice"\n' 'profession = "Engineer"\n' 'age = "30-39"\n',
+        '[personalization]\nenabled = true\nname = "Alice"\nprofession = "Engineer"\nage = "30-39"\n',
         encoding="utf-8",
     )
 

@@ -60,7 +60,7 @@ def format_attachment(
     warnings: list[str],
 ) -> str:
     """Render the full attachment string that gets queued for the next request."""
-    now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    now = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     lines: list[str] = [
         "<!-- web-attach metadata -->",

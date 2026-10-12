@@ -9,9 +9,10 @@ import platform
 import shlex
 import subprocess
 import tkinter as tk
+from collections.abc import Callable
 from tkinter import messagebox, ttk
 from tkinter.scrolledtext import ScrolledText
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from tuochat.context.artifacts import ArtifactKind, ContextArtifact, discover_all_artifacts
 from tuochat.context.recipes import Recipe, RecipeMatch, expand_recipe, list_recipes
@@ -370,7 +371,7 @@ class ContextBrowserTab:
         editor = resolve_editor()
         try:
             if editor:
-                cmd = shlex.split(editor) + [str(artifact.path)]
+                cmd = [*shlex.split(editor), str(artifact.path)]
                 with subprocess.Popen(cmd):  # noqa: S603
                     pass
             else:
@@ -401,11 +402,7 @@ class ContextBrowserTab:
         dialog.transient(self.parent)  # type: ignore[call-overload]
         dialog.grab_set()
 
-        info_text = (
-            f"Matched: {len(match.matched_paths)} files  |  "
-            f"Skipped: {len(match.skipped_paths)} files  |  "
-            f"~{match.estimated_tokens:,} tokens"
-        )
+        info_text = f"Matched: {len(match.matched_paths)} files  |  Skipped: {len(match.skipped_paths)} files  |  ~{match.estimated_tokens:,} tokens"
         if match.requires_preview:
             info_text += "  ⚠ Large attachment — review before sending"
         tk.Label(dialog, text=info_text, anchor="w").pack(fill="x", padx=8, pady=(8, 0))
@@ -430,9 +427,5 @@ class ContextBrowserTab:
         if self.on_attach_next_request is None:
             return
         label = match.recipe.display_name
-        payload = (
-            f"Recipe attachment: {label}\n"
-            f"({len(match.matched_paths)} files, ~{match.estimated_tokens:,} tokens)\n\n"
-            f"{match.rendered}"
-        )
+        payload = f"Recipe attachment: {label}\n({len(match.matched_paths)} files, ~{match.estimated_tokens:,} tokens)\n\n{match.rendered}"
         self.on_attach_next_request(label, payload, ArtifactKind.RECIPE.value)

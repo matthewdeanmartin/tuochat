@@ -21,7 +21,7 @@ def test_split_requirement_plain():
 def test_split_requirement_with_specifier():
     result = self_check.split_requirement("requests>=2.0,<3")
     assert result is not None
-    name, spec, marker = result
+    name, spec, _marker = result
     assert name == "requests"
     assert ">=2.0" in spec
 
@@ -29,7 +29,7 @@ def test_split_requirement_with_specifier():
 def test_split_requirement_with_marker():
     result = self_check.split_requirement('requests>=2.0; python_version >= "3.8"')
     assert result is not None
-    name, spec, marker = result
+    name, _spec, marker = result
     assert name == "requests"
     assert marker is not None
     assert "python_version" in marker
@@ -38,7 +38,7 @@ def test_split_requirement_with_marker():
 def test_split_requirement_with_extras():
     result = self_check.split_requirement("requests[security]>=2.0")
     assert result is not None
-    name, spec, marker = result
+    name, spec, _marker = result
     assert name == "requests"
     # extras bracket stripped from specifier
     assert "[" not in spec

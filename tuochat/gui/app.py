@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import io
 import logging
 import os
@@ -10,7 +11,7 @@ import re
 import threading
 import tkinter as tk
 import traceback
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from functools import partial
 from pathlib import Path
 from tkinter import filedialog, messagebox, simpledialog, ttk
@@ -706,10 +707,8 @@ class TkChatApp:
         active_theme = cfg_gui.theme
         if active_theme.startswith("ttk:"):
             ttk_name = active_theme[4:]
-            try:
+            with contextlib.suppress(tk.TclError):
                 ttk.Style(self.root).theme_use(ttk_name)
-            except tk.TclError:
-                pass
             # Apply light-mode colors to non-ttk widgets so they don't clash
             # with the bright-white ttk themes.
             light_colors = theme_colors("light")
@@ -841,10 +840,8 @@ class TkChatApp:
 
     def save_gui_config(self) -> None:
         """Persist the current GUI config (font/theme) to disk."""
-        try:
+        with contextlib.suppress(Exception):
             save_config(self.state.cfg, self.state.config_path)
-        except Exception:
-            pass
 
     def history_prev(self, event=None):
         # pylint: disable=unused-argument
@@ -1354,9 +1351,7 @@ class TkChatApp:
         self.state.pending_custom_path = custom_path
         self.state.pending_custom_name = describe_custom_instruction_path(custom_path, self.state.cfg)
         self.append_transcript(
-            "Selected custom instructions for the next new conversation: "
-            f"{self.state.pending_custom_name}\n"
-            "Start a new conversation to apply them at the top of the system prompt.\n"
+            f"Selected custom instructions for the next new conversation: {self.state.pending_custom_name}\nStart a new conversation to apply them at the top of the system prompt.\n"
         )
         self.notebook.select(self.files_tab)
         self.refresh_info_panel()
@@ -1620,7 +1615,7 @@ class TkChatApp:
         if not self.require_idle("applying from Context Browser"):
             return
         self.append_transcript(
-            f"Applied custom instruction for next conversation: {label}\n" "Start a new conversation to use it.\n"
+            f"Applied custom instruction for next conversation: {label}\nStart a new conversation to use it.\n"
         )
         self.notebook.select(self.files_tab)
         self.refresh_info_panel()
@@ -1826,20 +1821,16 @@ class TkChatApp:
         """Bring the main window to the foreground and optionally maximize it."""
         self.root.deiconify()
         if maximize:
-            try:
+            with contextlib.suppress(tk.TclError):
                 self.root.state("zoomed")
-            except tk.TclError:
-                pass
         self.root.lift()
         try:
             self.root.attributes("-topmost", True)
             self.root.after(200, partial(self.root.attributes, "-topmost", False))
         except tk.TclError:
             pass
-        try:
+        with contextlib.suppress(tk.TclError):
             self.root.focus_force()
-        except tk.TclError:
-            pass
 
     def prompt_for_classification(self) -> str:
         """Show the GUI classification chooser and return the raw selection."""
@@ -2046,9 +2037,9 @@ class TkChatApp:
                 should_exit = process_repl_submission(raw_input=raw_input, state=self.state)
         except Exception as exc:
             tb_str = traceback.format_exc()
-            try:
+            with contextlib.suppress(Exception):
                 self.store.save_error_log_entry(
-                    recorded_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                    recorded_at=datetime.now(UTC).isoformat(timespec="seconds"),
                     level=logging.ERROR,
                     level_name="ERROR",
                     logger_name="tuochat.gui",
@@ -2060,10 +2051,8 @@ class TkChatApp:
                     lineno=None,
                     func_name="process_submission",
                 )
-            except Exception:
-                pass
             print(
-                f"\n[Provider error] {type(exc).__name__}: {exc}\n" "Full details logged to the Errors tab.\n",
+                f"\n[Provider error] {type(exc).__name__}: {exc}\nFull details logged to the Errors tab.\n",
                 file=self.stream,
             )
             self.event_queue.put(("handle_provider_error", None))
@@ -2229,11 +2218,7 @@ class TkChatApp:
 
         answer = messagebox.askyesnocancel(
             "Working Directory",
-            f"The current directory is not a git repository:\n{current_cwd}\n\n"
-            "Would you like to choose a different working directory?\n\n"
-            "Yes = browse for directory\n"
-            "No = use current directory\n"
-            "Cancel = abort new conversation",
+            f"The current directory is not a git repository:\n{current_cwd}\n\nWould you like to choose a different working directory?\n\nYes = browse for directory\nNo = use current directory\nCancel = abort new conversation",
             parent=self.root,
         )
         if answer is None:

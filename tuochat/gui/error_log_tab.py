@@ -153,7 +153,7 @@ class ErrorLogTabView:
         yscroll.configure(command=self.tree.yview)
         xscroll.configure(command=self.tree.xview)
 
-        for col, header, width in zip(self.COLUMNS, self.COLUMN_HEADERS, self.COLUMN_WIDTHS):
+        for col, header, width in zip(self.COLUMNS, self.COLUMN_HEADERS, self.COLUMN_WIDTHS, strict=False):
             self.tree.heading(col, text=header)
             self.tree.column(col, width=width, minwidth=40, stretch=col == "message")
 

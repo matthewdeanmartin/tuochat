@@ -539,12 +539,7 @@ def test_gl_issue_attach_adds_context(capsys):
             "category": GL_CATEGORY,
             "name": "Alpha#issue-42",
             "content": (
-                "GitLab Issue: Alpha#42\n"
-                "Title: Fix login\n"
-                "State: opened\n"
-                "URL: https://gitlab.example.com/g/alpha/-/issues/42\n\n"
-                "Description:\n"
-                "Detailed issue body"
+                "GitLab Issue: Alpha#42\nTitle: Fix login\nState: opened\nURL: https://gitlab.example.com/g/alpha/-/issues/42\n\nDescription:\nDetailed issue body"
             ),
         }
     ]
@@ -611,13 +606,7 @@ def test_gl_mr_attach_adds_context(capsys):
             "category": GL_CATEGORY,
             "name": "Alpha!mr-5",
             "content": (
-                "GitLab Merge Request: Alpha!5\n"
-                "Title: Add endpoint\n"
-                "State: opened\n"
-                "Branches: feature -> main\n"
-                "URL: https://gitlab.example.com/g/alpha/-/merge_requests/5\n\n"
-                "Description:\n"
-                "Detailed MR body"
+                "GitLab Merge Request: Alpha!5\nTitle: Add endpoint\nState: opened\nBranches: feature -> main\nURL: https://gitlab.example.com/g/alpha/-/merge_requests/5\n\nDescription:\nDetailed MR body"
             ),
         }
     ]

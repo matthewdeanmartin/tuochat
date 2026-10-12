@@ -5,8 +5,7 @@
 from __future__ import annotations
 
 import json
-import sys
-from typing import Any, BinaryIO, TextIO, Union
+from typing import Any, BinaryIO, TextIO
 
 try:
     import orjson
@@ -28,22 +27,14 @@ try:
 except ImportError:
     HAS_RTOML = False
     # Fallback to tomllib/tomli
-    if sys.version_info >= (3, 11):
-        import tomllib
-
-        TOMLDecodeError = tomllib.TOMLDecodeError
-    else:
-        import tomli as tomllib
-
-        TOMLDecodeError = tomllib.TOMLDecodeError
-
-if sys.version_info >= (3, 11):
     import tomllib
-else:
-    import tomli as tomllib
+
+    TOMLDecodeError = tomllib.TOMLDecodeError
+
+import tomllib
 
 
-def json_loads(s: Union[str, bytes]) -> Any:
+def json_loads(s: str | bytes) -> Any:
     """Load JSON from string or bytes."""
     if HAS_ORJSON:
         return orjson.loads(s)
@@ -84,7 +75,7 @@ def json_dumps_bytes(
     ).encode("utf-8")
 
 
-def toml_load(f: Union[TextIO, BinaryIO]) -> dict[str, Any]:
+def toml_load(f: TextIO | BinaryIO) -> dict[str, Any]:
     """Load TOML from file-like object."""
     content = f.read()
     if isinstance(content, bytes):

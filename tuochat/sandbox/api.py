@@ -71,9 +71,7 @@ def resolve_js_adapter() -> Any:
 
         return DukpyAdapter()
     raise ImportError(
-        "No JavaScript runtime available. Install one of: "
-        "mini-racer (pip install mini-racer), "
-        "dukpy (pip install dukpy)"
+        "No JavaScript runtime available. Install one of: mini-racer (pip install mini-racer), dukpy (pip install dukpy)"
     )
 
 

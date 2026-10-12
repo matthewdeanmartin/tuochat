@@ -34,10 +34,11 @@ logger = logging.getLogger("tuochat.cli")
 
 def markings_for_orgs(orgs: list[str]) -> list[str]:
     """Return canned markings for the selected organizations."""
-    if not orgs or "All" in orgs:
-        values = [marking for items in ORG_MARKINGS.values() for marking in items]
-    else:
-        values = [marking for org in orgs for marking in ORG_MARKINGS.get(org, [])]
+    values = (
+        [marking for items in ORG_MARKINGS.values() for marking in items]
+        if not orgs or "All" in orgs
+        else [marking for org in orgs for marking in ORG_MARKINGS.get(org, [])]
+    )
     return dedupe_preserve_order([CLASSIFICATION_UNCLASSIFIED, *values])
 
 
@@ -473,19 +474,19 @@ def should_offer_first_run_tutorial(cfg: TuochatConfig) -> bool:
 
 
 __all__ = [
-    "markings_for_orgs",
-    "get_valid_classifications",
-    "classification_rank_map",
-    "normalized_max_classifications",
-    "classification_within_max",
     "classification_limit_message",
-    "resolve_classification_choice",
-    "prompt_classification",
-    "format_default_prompt",
-    "print_resource_id_guidance",
+    "classification_rank_map",
+    "classification_within_max",
     "config_requires_upgrade",
-    "run_init_wizard",
+    "format_default_prompt",
+    "get_valid_classifications",
     "is_first_run",
+    "markings_for_orgs",
     "maybe_run_first_run_setup",
+    "normalized_max_classifications",
+    "print_resource_id_guidance",
+    "prompt_classification",
+    "resolve_classification_choice",
+    "run_init_wizard",
     "should_offer_first_run_tutorial",
 ]

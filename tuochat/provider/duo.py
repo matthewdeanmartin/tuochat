@@ -9,8 +9,8 @@ No gql, no httpx, no requests, no websocket libraries.
 
 from __future__ import annotations
 
+import contextlib
 import logging
-import socket
 import ssl
 import time
 import urllib.error
@@ -572,7 +572,7 @@ class DuoProvider:
 
                 try:
                     raw = ws.recv()
-                except socket.timeout:
+                except TimeoutError:
                     # Short-timeout expired — loop back to check cancel()
                     continue
                 if raw is None:
@@ -838,8 +838,6 @@ def create_ssl_context() -> ssl.SSLContext:
     ctx = ssl.create_default_context()
     tls_version = getattr(ssl, "TLSVersion", None)
     if tls_version is not None and hasattr(tls_version, "TLSv1_3"):
-        try:
+        with contextlib.suppress(AttributeError, ValueError):
             ctx.maximum_version = tls_version.TLSv1_3
-        except (AttributeError, ValueError):
-            pass
     return ctx

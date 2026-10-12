@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -36,7 +36,7 @@ def make_row(
     tpt: float | None = None,
 ) -> dict:
     """Build a raw row dict for rollup tests."""
-    base = datetime(2025, 1, 15, 12, 0, 0, tzinfo=timezone.utc)
+    base = datetime(2025, 1, 15, 12, 0, 0, tzinfo=UTC)
     started = base + timedelta(hours=started_offset_hours)
     return {
         "request_started_at": started.isoformat(),
@@ -142,7 +142,7 @@ def test_ms_between_clamps_negative() -> None:
 
 
 def test_retention_cutoff_iso_is_in_past() -> None:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     cutoff = datetime.fromisoformat(retention_cutoff_iso(30))
     assert cutoff < now
     delta = now - cutoff
@@ -282,10 +282,10 @@ def test_store_get_observability_rows_filters_by_date(store: ConversationStore) 
 
 
 def test_store_cleanup_observability_retention(store: ConversationStore) -> None:
-    old_ts = (datetime.now(timezone.utc) - timedelta(days=40)).isoformat()
-    new_ts = datetime.now(timezone.utc).isoformat()
-    finished_old = (datetime.now(timezone.utc) - timedelta(days=40) + timedelta(seconds=1)).isoformat()
-    finished_new = (datetime.now(timezone.utc) + timedelta(seconds=1)).isoformat()
+    old_ts = (datetime.now(UTC) - timedelta(days=40)).isoformat()
+    new_ts = datetime.now(UTC).isoformat()
+    finished_old = (datetime.now(UTC) - timedelta(days=40) + timedelta(seconds=1)).isoformat()
+    finished_new = (datetime.now(UTC) + timedelta(seconds=1)).isoformat()
     store.save_observability_row(obs_row(started_iso=old_ts, finished_iso=finished_old))
     store.save_observability_row(obs_row(started_iso=new_ts, finished_iso=finished_new))
     deleted = store.cleanup_observability_retention(days=30)
@@ -295,8 +295,8 @@ def test_store_cleanup_observability_retention(store: ConversationStore) -> None
 
 
 def test_store_get_observability_rollups_triggers_cleanup(store: ConversationStore) -> None:
-    old_ts = (datetime.now(timezone.utc) - timedelta(days=40)).isoformat()
-    finished_old = (datetime.now(timezone.utc) - timedelta(days=40) + timedelta(seconds=1)).isoformat()
+    old_ts = (datetime.now(UTC) - timedelta(days=40)).isoformat()
+    finished_old = (datetime.now(UTC) - timedelta(days=40) + timedelta(seconds=1)).isoformat()
     store.save_observability_row(obs_row(started_iso=old_ts, finished_iso=finished_old))
     since = retention_cutoff_iso(30)
     rollups = store.get_observability_rollups(since)

@@ -6,7 +6,7 @@ audit runner into the small public surface documented in __init__.py.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Literal
 
 import tuochat.self_pkg_mgmt.self_check as self_check_module
@@ -162,7 +162,7 @@ def run_audit(host: Host | None = None, force: bool = False) -> Report:
     cache.save()
 
     return Report(
-        generated_at=datetime.now(timezone.utc),
+        generated_at=datetime.now(UTC),
         host_dist=report.host_dist,
         dependencies=report.dependencies,
         vulnerabilities=tuple(vulns),
@@ -215,14 +215,14 @@ def snooze(target: str, days: int, host: Host | None = None) -> None:
 
 __all__ = [
     "Position",
-    "check_for_updates",
-    "run_audit",
-    "self_upgrade",
-    "self_check",
-    "tamper_check",
-    "clear_cache",
-    "snooze",
     "Report",
     "VersionInfo",
     "Vulnerability",
+    "check_for_updates",
+    "clear_cache",
+    "run_audit",
+    "self_check",
+    "self_upgrade",
+    "snooze",
+    "tamper_check",
 ]

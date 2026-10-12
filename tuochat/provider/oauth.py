@@ -102,8 +102,7 @@ def parse_redirect(redirect_uri: str) -> tuple[str, int, str]:
     path = parsed.path or "/"
     if host not in {"127.0.0.1", "localhost", "::1"}:
         raise OAuthError(
-            f"Refusing to bind a non-loopback OAuth redirect host: {host!r}. "
-            "Use 127.0.0.1 or localhost so the auth code never leaves your machine."
+            f"Refusing to bind a non-loopback OAuth redirect host: {host!r}. Use 127.0.0.1 or localhost so the auth code never leaves your machine."
         )
     return host, port, path
 
@@ -155,18 +154,10 @@ class CallbackHandler(http.server.BaseHTTPRequestHandler):
         self.captured.error_description = (params.get("error_description") or [""])[0]
 
         if self.captured.error:
-            body = (
-                "<html><body><h1>tuochat: OAuth failed</h1>"
-                f"<p><b>{self.captured.error}</b>: {self.captured.error_description}</p>"
-                "<p>You can close this tab.</p></body></html>"
-            )
+            body = f"<html><body><h1>tuochat: OAuth failed</h1><p><b>{self.captured.error}</b>: {self.captured.error_description}</p><p>You can close this tab.</p></body></html>"
             self.send_response(400)
         elif self.captured.code:
-            body = (
-                "<html><body><h1>tuochat: signed in</h1>"
-                "<p>Authentication succeeded. You can close this tab and return to your terminal.</p>"
-                "</body></html>"
-            )
+            body = "<html><body><h1>tuochat: signed in</h1><p>Authentication succeeded. You can close this tab and return to your terminal.</p></body></html>"
             self.send_response(200)
         else:
             body = "<html><body><h1>tuochat: missing code</h1></body></html>"
@@ -282,8 +273,7 @@ def run_authorization_flow(
     host, port, path = parse_redirect(client.redirect_uri)
     if not loopback_port_available(host, port):
         raise OAuthError(
-            f"Local port {host}:{port} is already in use. Close whatever is bound to it "
-            "or set TUOCHAT_OAUTH_REDIRECT to a free loopback port."
+            f"Local port {host}:{port} is already in use. Close whatever is bound to it or set TUOCHAT_OAUTH_REDIRECT to a free loopback port."
         )
 
     verifier, challenge = make_pkce_pair()

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import tkinter as tk
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from tuochat.observability import DailyMetricSummary, DailyRollup
@@ -23,7 +23,7 @@ COLOR_NO_DATA = "#9ca3af"
 
 
 def retention_since_iso(days: int = 30) -> str:
-    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    cutoff = datetime.now(UTC) - timedelta(days=days)
     return cutoff.isoformat()
 
 
@@ -148,7 +148,7 @@ def draw_line_chart(
 
 def format_value(v: float) -> str:
     if v >= 10000:
-        return f"{v/1000:.1f}k"
+        return f"{v / 1000:.1f}k"
     if v >= 1000:
         return f"{v:.0f}"
     if v >= 10:
@@ -259,12 +259,7 @@ class ObservabilityTabView:
         total_completed = sum(r.completed for r in rollups)
         total_failed = sum(r.failed for r in rollups)
         total_cancelled = sum(r.cancelled for r in rollups)
-        summary_text = (
-            f"Completed:  {total_completed}\n"
-            f"Failed:     {total_failed}\n"
-            f"Cancelled:  {total_cancelled}\n"
-            f"Retention:  30 days"
-        )
+        summary_text = f"Completed:  {total_completed}\nFailed:     {total_failed}\nCancelled:  {total_cancelled}\nRetention:  30 days"
         self.summary_var.set(summary_text)
 
 

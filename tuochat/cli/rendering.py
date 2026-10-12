@@ -138,18 +138,14 @@ def print_session_intro(state: ReplState) -> None:
     print_system_prompt_sources(state)
     if not state.quiet:
         print(
-            "Paste your message and submit with "
-            f"{submit_key_hint()}. Ctrl+C cancels the current draft; use '/quit' or '/exit' to exit. "
-            "Use '/include' or '/attach' to attach a local file, '/skills' to list skills, "
-            "and '/template' to run a prompt template.\n"
+            f"Paste your message and submit with {submit_key_hint()}. Ctrl+C cancels the current draft; use '/quit' or '/exit' to exit. Use '/include' or '/attach' to attach a local file, '/skills' to list skills, and '/template' to run a prompt template.\n"
         )
     chat_cfg = getattr(state.cfg, "chat", None)
     no_write = bool(getattr(chat_cfg, "no_write", False))
     write_here = bool(getattr(chat_cfg, "write_here_mode", False))
     if not no_write and not write_here:
         print(
-            "Tip: generated files will be saved to the central archive. "
-            "Use /write-here-mode on to write them into the current directory instead."
+            "Tip: generated files will be saved to the central archive. Use /write-here-mode on to write them into the current directory instead."
         )
 
 
@@ -168,9 +164,7 @@ def print_system_prompt_sources(state: ReplState) -> None:
 def print_mask_notice(state: ReplState) -> None:
     """Warn that terminal masking occurred and explain how to disable it."""
     print(
-        "\n[Masking hid sensitive-looking output on screen. "
-        "Use /mask off to disable masking for this session, then "
-        f"/resume {state.conv.id[:8]} to reload this conversation unmasked.]",
+        f"\n[Masking hid sensitive-looking output on screen. Use /mask off to disable masking for this session, then /resume {state.conv.id[:8]} to reload this conversation unmasked.]",
         file=sys.stderr,
     )
 
@@ -178,9 +172,7 @@ def print_mask_notice(state: ReplState) -> None:
 def print_no_code_mode_notice(state: ReplState) -> None:
     """Warn that no-code-mode hid shell-like fenced code on screen."""
     print(
-        "\n[No-code-mode hid shell-like fenced code on screen. "
-        "Use /no-code-mode off to disable it for this session, then "
-        f"/resume {state.conv.id[:8]} to reload this conversation without that filter.]",
+        f"\n[No-code-mode hid shell-like fenced code on screen. Use /no-code-mode off to disable it for this session, then /resume {state.conv.id[:8]} to reload this conversation without that filter.]",
         file=sys.stderr,
     )
 
@@ -261,8 +253,7 @@ def print_command_log(state: ReplState) -> None:
             continue
         if kind == "turn":
             print(
-                f"[{idx}] {at} turn   in={entry.get('input_tokens', 0)} out={entry.get('output_tokens', 0)} "
-                f"req={entry.get('request_preview', '')} resp={entry.get('response_preview', '')}"
+                f"[{idx}] {at} turn   in={entry.get('input_tokens', 0)} out={entry.get('output_tokens', 0)} req={entry.get('request_preview', '')} resp={entry.get('response_preview', '')}"
             )
             continue
         print(f"[{idx}] {at} {kind} {entry}")
@@ -343,8 +334,7 @@ def print_expiration_warning(cfg: TuochatConfig) -> None:
     if days <= 0:
         return
     print(
-        "Warning: conversation expiration is enabled for chats older than "
-        f"{days} days. Set [chat].conversation_expiration_days = 0 in {cfg.config_file} to disable it."
+        f"Warning: conversation expiration is enabled for chats older than {days} days. Set [chat].conversation_expiration_days = 0 in {cfg.config_file} to disable it."
     )
 
 
@@ -417,10 +407,11 @@ def print_status(state: ReplState) -> None:
     print(f"Conversation: {conv.id[:8]}  title={conv.title or '(auto/unset)'}")
     active_resource = getattr(state, "active_resource", None)
     effective_resource_id = active_resource.resource_id if active_resource is not None else conv.resource_id
-    if active_resource is not None:
-        resource_label = f"{active_resource.display_label} ({effective_resource_id})"
-    else:
-        resource_label = effective_resource_id or "(none)"
+    resource_label = (
+        f"{active_resource.display_label} ({effective_resource_id})"
+        if active_resource is not None
+        else effective_resource_id or "(none)"
+    )
     print(f"Resource: {resource_label}")
     print(f"Model: {MODEL_LABELS.get(state.active_model, state.active_model)}")
     print(f"Duo model: {getattr(state, 'active_duo_model', None) or '(auto/default)'}")
@@ -452,9 +443,7 @@ def print_about() -> None:
     print()
     print("Author: Matthew Dean Martin")
     print(
-        "Tuochat is about 99% written by ChatGPT, Codex, Copilot, Gemini, Claude Code.\n"
-        "As such, the copyrightability of the code is indeterminate and if the law says it is not\n"
-        "copyrightable, then the code is Public Domain. Anything that is not public domain is MIT."
+        "Tuochat is about 99% written by ChatGPT, Codex, Copilot, Gemini, Claude Code.\nAs such, the copyrightability of the code is indeterminate and if the law says it is not\ncopyrightable, then the code is Public Domain. Anything that is not public domain is MIT."
     )
     print()
     print("GitLab is a trademark of GitLab.")
@@ -538,10 +527,7 @@ def print_doctor(cfg: TuochatConfig, *, streaming: bool) -> None:
         if value is None:
             print(f"  {key}=(unset)")
             continue
-        if "TOKEN" in key:
-            shown = value[:8] + "***" if len(value) > 8 else "***"
-        else:
-            shown = value
+        shown = (value[:8] + "***" if len(value) > 8 else "***") if "TOKEN" in key else value
         print(f"  {key}={shown}")
     proxy_keys_upper = ["HTTP_PROXY", "HTTPS_PROXY", "NO_PROXY", "ALL_PROXY"]
     print("Proxy:")
@@ -610,10 +596,9 @@ def context_stats_line(text: str, *, context_window: int) -> str:
     """Return compact stats for a context block."""
     encoded = text.encode("utf-8")
     tokens = estimate_tokens(text)
-    percent = int(round((tokens / context_window) * 100)) if context_window > 0 else 0
+    percent = round((tokens / context_window) * 100) if context_window > 0 else 0
     return (
-        f"tokens {tokens} / words {word_count(text)} / chars {len(text)} / "
-        f"kb {len(encoded) / 1024:.1f} / {percent} %"
+        f"tokens {tokens} / words {word_count(text)} / chars {len(text)} / kb {len(encoded) / 1024:.1f} / {percent} %"
     )
 
 
@@ -626,7 +611,7 @@ def context_box(title: str, text: str, *, context_window: int, width: int = CONT
 
 def remaining_context_box(*, used_tokens: int, remaining_tokens: int, context_window: int) -> list[str]:
     """Render a compact summary of the estimated remaining context window."""
-    percent_left = int(round((remaining_tokens / context_window) * 100)) if context_window > 0 else 0
+    percent_left = round((remaining_tokens / context_window) * 100) if context_window > 0 else 0
     return ascii_box(
         "Context Remaining",
         [
@@ -888,8 +873,7 @@ def print_saved_conversation_files(state: ReplState) -> None:
         f" [{classification_display_label(state.active_classification)}]" if state.active_classification else ""
     )
     print(
-        f"Saved conversation files{classification_info}: "
-        f"{state.last_saved_markdown_path} ({state.last_saved_extracted_count} extracted file(s))"
+        f"Saved conversation files{classification_info}: {state.last_saved_markdown_path} ({state.last_saved_extracted_count} extracted file(s))"
     )
     if getattr(state, "last_saved_virtual_file_notice", False):
         print("Named files written to central archive (write-here mode is off).")
@@ -899,44 +883,44 @@ def print_saved_conversation_files(state: ReplState) -> None:
 
 
 __all__ = [
-    "clear_screen",
     "announce_screen_transition",
-    "number_label",
-    "print_startup_banner",
-    "print_session_intro",
-    "print_system_prompt_sources",
-    "print_mask_notice",
-    "print_no_code_mode_notice",
-    "print_conversation_transcript",
-    "print_masked_conversation_transcript",
-    "one_line_preview",
-    "print_command_log",
-    "context_usage_summary",
-    "humanize_report_key",
-    "render_markdown_config",
-    "print_report_value",
-    "print_turn_estimate",
-    "print_expiration_warning",
-    "print_verbose_context",
-    "print_timeout_limits",
-    "print_chat_diagnostics",
-    "print_response_footer",
-    "print_status",
-    "print_about",
-    "title_case_key",
-    "print_doctor_table",
-    "print_doctor",
-    "print_files",
-    "text_size_lines",
     "ascii_box",
+    "clear_screen",
+    "context_box",
     "context_preview",
     "context_stats_line",
-    "context_box",
-    "remaining_context_box",
-    "print_context",
-    "print_token_check",
-    "print_chat_summary",
-    "print_pending_attachments",
+    "context_usage_summary",
+    "humanize_report_key",
+    "number_label",
+    "one_line_preview",
+    "print_about",
     "print_attachment_estimate",
+    "print_chat_diagnostics",
+    "print_chat_summary",
+    "print_command_log",
+    "print_context",
+    "print_conversation_transcript",
+    "print_doctor",
+    "print_doctor_table",
+    "print_expiration_warning",
+    "print_files",
+    "print_mask_notice",
+    "print_masked_conversation_transcript",
+    "print_no_code_mode_notice",
+    "print_pending_attachments",
+    "print_report_value",
+    "print_response_footer",
     "print_saved_conversation_files",
+    "print_session_intro",
+    "print_startup_banner",
+    "print_status",
+    "print_system_prompt_sources",
+    "print_timeout_limits",
+    "print_token_check",
+    "print_turn_estimate",
+    "print_verbose_context",
+    "remaining_context_box",
+    "render_markdown_config",
+    "text_size_lines",
+    "title_case_key",
 ]

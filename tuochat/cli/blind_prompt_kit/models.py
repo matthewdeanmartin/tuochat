@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
-from typing import Any, Callable, Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 ValueT = TypeVar("ValueT")
 

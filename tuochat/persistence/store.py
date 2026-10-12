@@ -439,7 +439,7 @@ class ConversationStore:
             FROM messages_fts
             JOIN messages ON messages.id = messages_fts.message_id
             JOIN conversations ON conversations.id = messages_fts.conversation_id
-            WHERE {' AND '.join(where)}
+            WHERE {" AND ".join(where)}
             ORDER BY bm25(messages_fts), conversations.updated_at DESC, messages.created_at DESC
             LIMIT ?
             """  # nosec B608

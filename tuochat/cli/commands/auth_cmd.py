@@ -87,8 +87,7 @@ def resolve_oauth_client(cfg: TuochatConfig, *, prompt_for_missing: bool) -> OAu
 
     if not client_id or not client_secret:
         raise OAuthError(
-            "Missing OAuth client id or secret. Set TUOCHAT_OAUTH_APP_ID and "
-            "TUOCHAT_OAUTH_SECRET, or run `tuochat auth login` interactively."
+            "Missing OAuth client id or secret. Set TUOCHAT_OAUTH_APP_ID and TUOCHAT_OAUTH_SECRET, or run `tuochat auth login` interactively."
         )
 
     return OAuthClient(

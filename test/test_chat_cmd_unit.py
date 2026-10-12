@@ -103,14 +103,14 @@ def test_resolve_target_latest_returns_first_conversation(tmp_path):
     def noop_resolve(store, partial):
         return None
 
-    conv_id, warnings = resolve_target_conversation(store, "latest", noop_resolve)
+    conv_id, _warnings = resolve_target_conversation(store, "latest", noop_resolve)
     assert conv_id is not None
     store.close()
 
 
 def test_resolve_target_latest_empty_store(tmp_path):
     store = ConversationStore(tmp_path / "empty.db")
-    conv_id, warnings = resolve_target_conversation(store, "latest", lambda s, p: None)
+    conv_id, _warnings = resolve_target_conversation(store, "latest", lambda s, p: None)
     assert conv_id is None
     store.close()
 
@@ -125,7 +125,7 @@ def test_resolve_target_prefix_delegates(tmp_path):
         matches = [c for c in convs if c.id.startswith(partial)]
         return matches[0].id if len(matches) == 1 else None
 
-    conv_id, warnings = resolve_target_conversation(store, conv.id[:8], resolver)
+    conv_id, _warnings = resolve_target_conversation(store, conv.id[:8], resolver)
     assert conv_id == conv.id
     store.close()
 

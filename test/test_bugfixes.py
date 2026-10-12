@@ -13,7 +13,7 @@ Covers:
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -518,7 +518,7 @@ class TestWeeklyUsageStore:
         assert result["turns"] == 2
 
     def test_excludes_data_before_week_start(self, store):
-        old_ts = (datetime.now(timezone.utc) - timedelta(days=14)).isoformat()
+        old_ts = (datetime.now(UTC) - timedelta(days=14)).isoformat()
         self.save_usage(store, 9999, 9999, recorded_at=old_ts)
         self.save_usage(store, 100, 50)
         week_start = week_start_iso()
@@ -537,7 +537,7 @@ class TestWeeklyUsageStore:
         # Python weekday: Mon=0 … Sun=6
         assert dt.weekday() == 6 or dt.weekday() == 0  # Sunday (6) or Monday (0 when today IS Sunday)
         # More precisely: the result should be the most recent Sunday
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         days_since_sunday = (now.weekday() + 1) % 7
         expected_sunday = (now - timedelta(days=days_since_sunday)).replace(hour=0, minute=0, second=0, microsecond=0)
         assert dt.date() == expected_sunday.date()

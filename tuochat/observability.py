@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import statistics
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -83,7 +83,7 @@ class DailyRollup:
 
 def utc_now_iso() -> str:
     """Return the current UTC time as an ISO 8601 string."""
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def ms_between(start_iso: str, end_iso: str) -> int:
@@ -96,17 +96,14 @@ def ms_between(start_iso: str, end_iso: str) -> int:
 
 def retention_cutoff_iso(days: int = 30) -> str:
     """Return the UTC ISO timestamp for the start of the retention window."""
-    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+    cutoff = datetime.now(UTC) - timedelta(days=days)
     return cutoff.isoformat()
 
 
 def day_bucket(iso_timestamp: str) -> str:
     """Return the UTC date string (YYYY-MM-DD) for an ISO timestamp."""
     dt = datetime.fromisoformat(iso_timestamp)
-    if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
-    else:
-        dt = dt.astimezone(timezone.utc)
+    dt = dt.replace(tzinfo=UTC) if dt.tzinfo is None else dt.astimezone(UTC)
     return dt.strftime("%Y-%m-%d")
 
 

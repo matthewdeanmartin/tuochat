@@ -6,7 +6,8 @@ import base64
 import math
 import re
 import sys
-from typing import TYPE_CHECKING, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from tuochat.estimation import substantive_char_count
 
@@ -132,8 +133,7 @@ def confirm_warn_words(text: str, cfg: TuochatConfig, prompt_fn: Callable[[str],
 def confirm_large_request(actual_chars: int, max_chars: int, prompt_fn: Callable[[str], str]) -> bool:
     """Prompt before sending an oversized request."""
     print(
-        "Request is larger than the configured soft limit: "
-        f"{actual_chars} chars exceeds max_request_chars={max_chars}.",
+        f"Request is larger than the configured soft limit: {actual_chars} chars exceeds max_request_chars={max_chars}.",
         file=sys.stderr,
     )
     print(
@@ -176,8 +176,7 @@ def find_gitlab_token_in_text(text: str, cfg: TuochatConfig) -> list[str]:
 def warn_large_request(actual_chars: int, max_chars: int) -> None:
     """Emit a non-fatal warning when an oversized request is sent non-interactively."""
     print(
-        f"Warning: request is {actual_chars} chars, exceeds max_request_chars={max_chars}. "
-        "Sending anyway (non-interactive mode).",
+        f"Warning: request is {actual_chars} chars, exceeds max_request_chars={max_chars}. Sending anyway (non-interactive mode).",
         file=sys.stderr,
     )
 
@@ -202,8 +201,7 @@ def validate_user_request(
     gitlab_tokens = find_gitlab_token_in_text(outbound_input, cfg)
     if gitlab_tokens:
         print(
-            "Your request appears to contain your GitLab API token. "
-            "The LLM does not need and should not receive your API key.",
+            "Your request appears to contain your GitLab API token. The LLM does not need and should not receive your API key.",
             file=sys.stderr,
         )
         print("Request cancelled to prevent token exposure.", file=sys.stderr)

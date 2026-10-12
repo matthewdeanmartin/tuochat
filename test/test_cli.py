@@ -40,10 +40,8 @@ from tuochat.serialization import json_dumps, json_loads
 def test_cli_help(capsys):
     """Test that the CLI help message is displayed."""
     with patch.object(sys, "argv", ["tuochat", "--help"]):
-        try:
+        with contextlib.suppress(SystemExit):
             main()
-        except SystemExit:
-            pass
     captured = capsys.readouterr()
     assert "usage: tuochat" in captured.out
     assert "GitLab Duo Chat client" in captured.out
@@ -52,10 +50,8 @@ def test_cli_help(capsys):
 def test_cli_version(capsys):
     """Test that the CLI version message is displayed."""
     with patch.object(sys, "argv", ["tuochat", "--version"]):
-        try:
+        with contextlib.suppress(SystemExit):
             main()
-        except SystemExit:
-            pass
     captured = capsys.readouterr()
     assert __version__ in captured.out or __version__ in captured.err
 
@@ -75,10 +71,8 @@ def test_cli_no_args(capsys):
 def test_cli_help_mentions_grouped_local_commands(capsys):
     """Test that help advertises the grouped local command surface."""
     with patch.object(sys, "argv", ["tuochat", "--help"]):
-        try:
+        with contextlib.suppress(SystemExit):
             main()
-        except SystemExit:
-            pass
     captured = capsys.readouterr()
     assert "convo" in captured.out
     assert "archive" in captured.out
@@ -2102,8 +2096,7 @@ def test_template_command_renders_template_and_records_metadata(tmp_path, monkey
     template_path = tmp_path / "central-templates" / "recipe" / "TEMPLATE.md"
     template_path.parent.mkdir(parents=True)
     template_path.write_text(
-        "---\nname: recipe\ndescription: Recipe helper\n---\n"
-        "I have too many {INGREDIENT} and want a recipe in style of {CUISINE} for {PEOPLE_COUNT}.",
+        "---\nname: recipe\ndescription: Recipe helper\n---\nI have too many {INGREDIENT} and want a recipe in style of {CUISINE} for {PEOPLE_COUNT}.",
         encoding="utf-8",
     )
 
@@ -2136,8 +2129,7 @@ def test_template_command_supports_attached_code_and_auto_tokens(tmp_path, monke
     code_path = tmp_path / "sample.py"
     template_path.parent.mkdir(parents=True)
     template_path.write_text(
-        "---\nname: explain\ndescription: Explain helper\n---\n"
-        "Repo: {GIT_REPO_NAME}\nWhen: {DATE}\nCode:\n{ATTACHED_CODE}",
+        "---\nname: explain\ndescription: Explain helper\n---\nRepo: {GIT_REPO_NAME}\nWhen: {DATE}\nCode:\n{ATTACHED_CODE}",
         encoding="utf-8",
     )
     code_path.write_text("print('hello')\n", encoding="utf-8")

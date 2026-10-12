@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 import runpy
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
@@ -30,7 +30,7 @@ def sample_report(*, actionable: bool = True, vulnerability_fix: bool = False) -
         name="tuochat",
         installed="0.5.0",
         latest="0.6.0",
-        latest_published=datetime(2026, 4, 1, tzinfo=timezone.utc),
+        latest_published=datetime(2026, 4, 1, tzinfo=UTC),
         age_days=9.0,
         is_upgrade_available=actionable,
         is_in_cooloff=False,
@@ -51,7 +51,7 @@ def sample_report(*, actionable: bool = True, vulnerability_fix: bool = False) -
 
 
 def test_json_default_serializes_datetime_and_dataclass():
-    now = datetime(2026, 4, 10, tzinfo=timezone.utc)
+    now = datetime(2026, 4, 10, tzinfo=UTC)
 
     assert cli.json_default(now) == now.isoformat()
     assert cli.json_default(TinyDataclass(3)) == {"value": 3}

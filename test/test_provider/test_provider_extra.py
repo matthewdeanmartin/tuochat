@@ -130,7 +130,7 @@ def test_duo_chat_streaming_cancellation(mock_urlopen, mock_ws_class, duo_provid
         json_dumps_bytes({"type": "welcome"}),
         json_dumps_bytes({"type": "confirm_subscription"}),
         graphql_msg("Partial", 1),
-        socket.timeout("timeout for polling"),
+        TimeoutError("timeout for polling"),
         graphql_msg("Should not be reached", 2),
     ]
 
@@ -164,7 +164,7 @@ def test_duo_reset_conversation(mock_urlopen, duo_provider):
 
     assert mock_urlopen.call_count == 1
     # Check that it sent "/reset"
-    args, kwargs = mock_urlopen.call_args
+    args, _kwargs = mock_urlopen.call_args
     req = args[0]
     body = json_loads(req.data.decode("utf-8"))
     assert body["variables"]["question"] == "/reset"

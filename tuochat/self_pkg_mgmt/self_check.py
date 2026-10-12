@@ -77,7 +77,7 @@ def satisfies(op: str, installed: str, wanted: str) -> bool:
         if len(rhs) < 2:
             return lhs >= rhs
         upper = rhs[:-1]
-        upper_plus = upper[:-1] + (upper[-1] + 1,)
+        upper_plus = (*upper[:-1], upper[-1] + 1)
         return lhs >= rhs and lhs[: len(upper_plus)] < upper_plus
     return True
 

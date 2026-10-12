@@ -52,7 +52,7 @@ def test_read_safe_text_file(tmp_path):
 def test_read_include_file(tmp_path):
     txt_file = tmp_path / "test.txt"
     txt_file.write_text("Hello UTF-8", encoding="utf-8")
-    text, fingerprint, size = read_include_file(txt_file)
+    text, _fingerprint, _size = read_include_file(txt_file)
     assert text == "Hello UTF-8"
 
     bin_file = tmp_path / "test.bin"

@@ -10,6 +10,7 @@ Run explicitly with:
 
 from __future__ import annotations
 
+import contextlib
 import os
 import re
 from pathlib import Path
@@ -30,9 +31,7 @@ SCENARIOS = [
         "streaming": True,
         "prefix": "Case1:",
         "prompt": (
-            "Begin your response with the exact text 'Case1:' and continue in plain English. "
-            "Do not use markdown, bullet points, code fences, or quotes around the prefix. "
-            "In exactly two short sentences, explain what a merge request is in GitLab."
+            "Begin your response with the exact text 'Case1:' and continue in plain English. Do not use markdown, bullet points, code fences, or quotes around the prefix. In exactly two short sentences, explain what a merge request is in GitLab."
         ),
     },
     {
@@ -40,9 +39,7 @@ SCENARIOS = [
         "streaming": True,
         "prefix": "Case2:",
         "prompt": (
-            "Begin your response with the exact text 'Case2:' and continue in plain English. "
-            "Do not use markdown, bullet points, code fences, or quotes around the prefix. "
-            "In exactly two short sentences, explain when a GitLab branch is useful."
+            "Begin your response with the exact text 'Case2:' and continue in plain English. Do not use markdown, bullet points, code fences, or quotes around the prefix. In exactly two short sentences, explain when a GitLab branch is useful."
         ),
     },
     {
@@ -50,9 +47,7 @@ SCENARIOS = [
         "streaming": False,
         "prefix": "Case3:",
         "prompt": (
-            "Begin your response with the exact text 'Case3:' and continue in plain English. "
-            "Do not use markdown, bullet points, code fences, or quotes around the prefix. "
-            "Write one short paragraph explaining what a GitLab issue is."
+            "Begin your response with the exact text 'Case3:' and continue in plain English. Do not use markdown, bullet points, code fences, or quotes around the prefix. Write one short paragraph explaining what a GitLab issue is."
         ),
     },
     {
@@ -60,9 +55,7 @@ SCENARIOS = [
         "streaming": False,
         "prefix": "Case4:",
         "prompt": (
-            "Begin your response with the exact text 'Case4:' and continue in plain English. "
-            "Do not use markdown, bullet points, code fences, or quotes around the prefix. "
-            "In exactly two short sentences, explain what a GitLab pipeline does."
+            "Begin your response with the exact text 'Case4:' and continue in plain English. Do not use markdown, bullet points, code fences, or quotes around the prefix. In exactly two short sentences, explain what a GitLab pipeline does."
         ),
     },
 ]
@@ -168,10 +161,8 @@ def live_state(tmp_path: Path, live_gitlab_credentials: SimpleNamespace, monkeyp
         try:
             yield state
         finally:
-            try:
+            with contextlib.suppress(Exception):
                 provider.reset_conversation()
-            except Exception:
-                pass
 
 
 def run_turn_and_read_saved_markdown(state: ReplState, prompt: str, *, streaming: bool) -> tuple[Path, str]:

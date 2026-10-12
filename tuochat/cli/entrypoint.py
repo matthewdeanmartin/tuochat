@@ -22,8 +22,7 @@ def build_parser() -> SmartParser:
         prog="tuochat",
         description="GitLab Duo Chat client with local conversation tools",
         epilog=(
-            "Many REPL slash commands also have top-level equivalents. "
-            "Use `tuochat convo ...`, `tuochat archive ...`, `tuochat context ...`, and `tuochat headless ...`."
+            "Many REPL slash commands also have top-level equivalents. Use `tuochat convo ...`, `tuochat archive ...`, `tuochat context ...`, and `tuochat headless ...`."
         ),
     )
     parser.add_argument(
@@ -140,9 +139,7 @@ def build_parser() -> SmartParser:
         "chat",
         help="Automation-friendly non-interactive chat (use `repl` for the interactive REPL)",
         description=(
-            "Non-interactive automation commands. "
-            "Each subcommand runs one action and exits. "
-            "Use `tuochat repl` for the interactive REPL."
+            "Non-interactive automation commands. Each subcommand runs one action and exits. Use `tuochat repl` for the interactive REPL."
         ),
     )
     chat_subparsers = chat_parser.add_subparsers(dest="chat_command")
@@ -451,10 +448,11 @@ def load_config_with_cli_overrides(config_path: Path | str | GlobalOptions | Non
     from tuochat.cli.command_models import GlobalOptions  # noqa: E402
     from tuochat.logging_config import setup_logging  # noqa: E402
 
-    if isinstance(config_path, GlobalOptions):
-        global_options = config_path
-    else:
-        global_options = GlobalOptions(config_path=Path(config_path) if config_path else None)
+    global_options = (
+        config_path
+        if isinstance(config_path, GlobalOptions)
+        else GlobalOptions(config_path=Path(config_path) if config_path else None)
+    )
 
     cfg = load_config(global_options.config_path)
     cfg = bootstrap.apply_global_overrides(cfg, global_options)

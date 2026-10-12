@@ -167,9 +167,7 @@ def verify_files_against_record(package_name: str) -> list[str]:
             continue
         if actual_digest != expected_digest:
             failures.append(
-                f"hash mismatch: {file_path}\n"
-                f"  expected sha256={expected_digest}\n"
-                f"  actual   sha256={actual_digest}"
+                f"hash mismatch: {file_path}\n  expected sha256={expected_digest}\n  actual   sha256={actual_digest}"
             )
 
     if checked_count == 0:
@@ -209,9 +207,7 @@ def verify_files_against_embedded_manifest(package_name: str) -> list[str]:
         actual_digest = sha256_file(file_path)
         if actual_digest != expected_digest:
             failures.append(
-                f"hash mismatch: {file_path}\n"
-                f"  expected sha256={expected_digest}\n"
-                f"  actual   sha256={actual_digest}"
+                f"hash mismatch: {file_path}\n  expected sha256={expected_digest}\n  actual   sha256={actual_digest}"
             )
     return failures
 

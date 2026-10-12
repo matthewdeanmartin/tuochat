@@ -125,10 +125,7 @@ def parse_env_line(line: str) -> tuple[str, str] | None:
 
 def load_dotenv(dotenv_path: str | Path | None = None, *, override: bool = False) -> Path | None:
     """Load environment variables from a .env file using only stdlib."""
-    if dotenv_path is None:
-        path = Path.cwd() / ".env"
-    else:
-        path = Path(dotenv_path).expanduser()
+    path = Path.cwd() / ".env" if dotenv_path is None else Path(dotenv_path).expanduser()
 
     if not path.is_file():
         return None
@@ -509,10 +506,7 @@ def load_config(config_path: str | None = None) -> TuochatConfig:
 
     # Determine config file path
     path_str = config_path or os.environ.get("TUOCHAT_CONFIG")
-    if path_str:
-        path = Path(path_str)
-    else:
-        path = cfg.config_file
+    path = Path(path_str) if path_str else cfg.config_file
 
     # Load TOML if it exists
     if path.is_file():
@@ -644,10 +638,7 @@ def load_config(config_path: str | None = None) -> TuochatConfig:
 def write_default_config(config_path: str | Path | None = None, *, force: bool = False) -> Path:
     """Create a starter config file and return its path."""
     cfg = TuochatConfig()
-    if config_path is None:
-        path = cfg.config_file
-    else:
-        path = Path(config_path).expanduser()
+    path = cfg.config_file if config_path is None else Path(config_path).expanduser()
 
     if path.exists() and not force:
         raise FileExistsError(path)

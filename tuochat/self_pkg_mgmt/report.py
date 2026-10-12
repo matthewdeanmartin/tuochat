@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 
 @dataclass(frozen=True)
@@ -38,7 +38,7 @@ class Vulnerability:
 
 @dataclass(frozen=True)
 class Report:
-    generated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
+    generated_at: datetime = field(default_factory=lambda: datetime.now(UTC))
     host_dist: VersionInfo | None = None
     dependencies: tuple[VersionInfo, ...] = ()
     vulnerabilities: tuple[Vulnerability, ...] = ()

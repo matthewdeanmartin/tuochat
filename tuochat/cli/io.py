@@ -5,7 +5,7 @@ from __future__ import annotations
 import getpass
 import io
 import sys
-from contextlib import ExitStack, contextmanager, redirect_stderr, redirect_stdout
+from contextlib import ExitStack, contextmanager, redirect_stderr, redirect_stdout, suppress
 from contextvars import ContextVar
 from typing import Any, Protocol
 
@@ -87,14 +87,10 @@ class ReadlineBackend:
 
             history_file = config_dir() / "repl_history"
             self.history_path = str(history_file)
-            try:
+            with suppress(FileNotFoundError, OSError, AttributeError):
                 self.readline_mod.read_history_file(self.history_path)
-            except (FileNotFoundError, OSError, AttributeError):
-                pass
-            try:
+            with suppress(AttributeError):
                 self.readline_mod.set_history_length(2000)
-            except AttributeError:
-                pass
 
         # Slash-command completion
         from tuochat.constants import KNOWN_SLASH_COMMANDS
@@ -118,10 +114,8 @@ class ReadlineBackend:
 
     def shutdown(self) -> None:
         if self.readline_mod is not None and self.history_path is not None:
-            try:
+            with suppress(OSError):
                 self.readline_mod.write_history_file(self.history_path)
-            except OSError:
-                pass
 
 
 class PromptToolkitBackend:

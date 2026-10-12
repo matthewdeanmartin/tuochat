@@ -20,11 +20,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger("tuochat.jira_client")
 
-JIRA_INSTALL_HINT = (
-    "The Jira integration requires the 'jira' package.\n"
-    "Install it with:  uv sync --extra jira\n"
-    "or:               pip install 'tuochat[jira]'"
-)
+JIRA_INSTALL_HINT = "The Jira integration requires the 'jira' package.\nInstall it with:  uv sync --extra jira\nor:               pip install 'tuochat[jira]'"
 
 # Maximum issues fetched per project list view
 DEFAULT_ISSUE_LIMIT = 50
@@ -85,16 +81,11 @@ def build_jira_client(host: str, deployment: str, email: str, token: str, ssl_ca
 
     options = {"server": host, "verify": verify}
 
-    if deployment == "cloud":
-        client = jira_module.JIRA(
-            options=options,
-            basic_auth=(email, token),
-        )
-    else:
-        client = jira_module.JIRA(
-            options=options,
-            token_auth=token,
-        )
+    client = (
+        jira_module.JIRA(options=options, basic_auth=(email, token))
+        if deployment == "cloud"
+        else jira_module.JIRA(options=options, token_auth=token)
+    )
 
     return client
 
@@ -130,10 +121,7 @@ class JiraMetaClient:
 
         raw: list[dict] = []
 
-        if self.deployment == "cloud":
-            raw = self.list_projects_cloud(limit)
-        else:
-            raw = self.list_projects_server(limit)
+        raw = self.list_projects_cloud(limit) if self.deployment == "cloud" else self.list_projects_server(limit)
 
         descriptors = [
             JiraProjectDescriptor(
@@ -219,10 +207,7 @@ class JiraMetaClient:
         """Fetch a single issue and return a JiraIssueDetail."""
         from tuochat.jira_models import JiraIssueDetail  # noqa: PLC0415
 
-        fields_param = (
-            "summary,status,issuetype,priority,assignee,reporter,"
-            "created,updated,labels,fixVersions,components,description"
-        )
+        fields_param = "summary,status,issuetype,priority,assignee,reporter,created,updated,labels,fixVersions,components,description"
         issue = self.client.issue(issue_key, fields=fields_param)
         f = issue.fields
 

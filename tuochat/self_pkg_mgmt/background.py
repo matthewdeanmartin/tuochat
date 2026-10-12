@@ -8,7 +8,7 @@ and picked up on the next startup.
 from __future__ import annotations
 
 import threading
-from typing import Callable
+from collections.abc import Callable
 
 
 def spawn(target: Callable[[], None], name: str = "self-pkg-mgmt-refresh") -> threading.Thread:

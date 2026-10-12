@@ -186,7 +186,7 @@ def test_runner_pip_audit_falls_back_to_python_m(monkeypatch):
         return payload, "", 0  # second call: python -m succeeds
 
     monkeypatch.setattr(audit, "run_cmd", fake_run_cmd)
-    vulns, tool = audit.runner_pip_audit()
+    _vulns, tool = audit.runner_pip_audit()
     assert tool == "pip-audit"
     assert call_count[0] == 2
 
@@ -194,13 +194,13 @@ def test_runner_pip_audit_falls_back_to_python_m(monkeypatch):
 def test_runner_pip_audit_both_fail(monkeypatch):
     monkeypatch.setattr(audit, "which", lambda name: "/usr/bin/pip-audit" if name == "pip-audit" else None)
     monkeypatch.setattr(audit, "run_cmd", lambda argv: ("", "", None))
-    vulns, tool = audit.runner_pip_audit()
+    _vulns, tool = audit.runner_pip_audit()
     assert tool is None
 
 
 def test_runner_safety_no_tool(monkeypatch):
     monkeypatch.setattr(audit, "which", lambda name: None)
-    vulns, tool = audit.runner_safety()
+    _vulns, tool = audit.runner_safety()
     assert tool is None
 
 
@@ -216,13 +216,13 @@ def test_runner_safety_present(monkeypatch):
 def test_runner_safety_cmd_fails(monkeypatch):
     monkeypatch.setattr(audit, "which", lambda name: "/usr/bin/safety" if name == "safety" else None)
     monkeypatch.setattr(audit, "run_cmd", lambda argv: ("", "", None))
-    vulns, tool = audit.runner_safety()
+    _vulns, tool = audit.runner_safety()
     assert tool is None
 
 
 def test_runner_uv_audit_no_tool(monkeypatch):
     monkeypatch.setattr(audit, "which", lambda name: None)
-    vulns, tool = audit.runner_uv_audit()
+    _vulns, tool = audit.runner_uv_audit()
     assert tool is None
 
 
@@ -230,7 +230,7 @@ def test_runner_uv_audit_present(monkeypatch):
     monkeypatch.setattr(audit, "which", lambda name: "/usr/bin/uv" if name == "uv" else None)
     payload = json.dumps([])
     monkeypatch.setattr(audit, "run_cmd", lambda argv: (payload, "", 0))
-    vulns, tool = audit.runner_uv_audit()
+    _vulns, tool = audit.runner_uv_audit()
     assert tool == "uv-audit"
 
 
@@ -242,7 +242,7 @@ def test_runner_uv_audit_present(monkeypatch):
 def test_run_available_audit_uv_first(monkeypatch):
     monkeypatch.setattr(audit, "runner_uv_audit", lambda: ([], "uv-audit"))
     monkeypatch.setattr(audit, "runner_pip_audit", lambda: ([], "pip-audit"))
-    vulns, tool = audit.run_available_audit()
+    _vulns, tool = audit.run_available_audit()
     assert tool == "uv-audit"
 
 
@@ -250,7 +250,7 @@ def test_run_available_audit_falls_through_to_pip_audit(monkeypatch):
     monkeypatch.setattr(audit, "runner_uv_audit", lambda: ([], None))
     monkeypatch.setattr(audit, "runner_pip_audit", lambda: ([], "pip-audit"))
     monkeypatch.setattr(audit, "runner_safety", lambda: ([], "safety"))
-    vulns, tool = audit.run_available_audit()
+    _vulns, tool = audit.run_available_audit()
     assert tool == "pip-audit"
 
 
@@ -258,7 +258,7 @@ def test_run_available_audit_falls_through_to_safety(monkeypatch):
     monkeypatch.setattr(audit, "runner_uv_audit", lambda: ([], None))
     monkeypatch.setattr(audit, "runner_pip_audit", lambda: ([], None))
     monkeypatch.setattr(audit, "runner_safety", lambda: ([], "safety"))
-    vulns, tool = audit.run_available_audit()
+    _vulns, tool = audit.run_available_audit()
     assert tool == "safety"
 
 

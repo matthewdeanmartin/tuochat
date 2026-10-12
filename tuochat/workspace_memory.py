@@ -23,10 +23,7 @@ COMPACT_FILE = "compact.md"
 MEMORY_FENCE_LANG = "MEMORY"
 COMPACT_FENCE_LANG = "COMPACT"
 TODO_FENCE_LANG = "TODO"
-NESTED_MARKDOWN_FENCE_GUIDANCE = (
-    "If your markdown document needs fenced examples inside it, use tildes (`~~~`) for those inner fences "
-    "instead of triple backticks so the outer extractable fence stays parseable.\n\n"
-)
+NESTED_MARKDOWN_FENCE_GUIDANCE = "If your markdown document needs fenced examples inside it, use tildes (`~~~`) for those inner fences instead of triple backticks so the outer extractable fence stays parseable.\n\n"
 
 MEMORY_PROMPT = (
     "Hey, is there anything from our conversation you'd like me to remember for future sessions? "
@@ -39,12 +36,8 @@ MEMORY_PROMPT = (
 )
 
 COMPACT_PROMPT = (
-    "Please summarize our conversation so far into a compact briefing that captures the key "
-    "context, decisions, open questions, and any important details. "
-    "Put the summary inside a fenced code block like this:\n\n"
-    "```COMPACT\n"
-    "Summary here.\n"
-    "```\n\n" + NESTED_MARKDOWN_FENCE_GUIDANCE
+    "Please summarize our conversation so far into a compact briefing that captures the key context, decisions, open questions, and any important details. Put the summary inside a fenced code block like this:\n\n```COMPACT\nSummary here.\n```\n\n"
+    + NESTED_MARKDOWN_FENCE_GUIDANCE
 )
 
 TODO_PROMPT = (

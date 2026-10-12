@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
 from re import Pattern
-from typing import Callable
 
 from .core import InteractionContext
 
@@ -66,10 +66,11 @@ class LargeTextInput:
 
     def run(self, context: InteractionContext) -> str:
         """Collect multiline text line by line."""
-        if self.blank_line_done:
-            instructions = "Enter text. Blank line to finish."
-        else:
-            instructions = f"Enter text. Type {self.terminator} on its own line to finish."
+        instructions = (
+            "Enter text. Blank line to finish."
+            if self.blank_line_done
+            else f"Enter text. Type {self.terminator} on its own line to finish."
+        )
         help_text = self.help_text or (
             "Commands here: show, show last, show summary, edit last, clear, done, back, cancel."
         )

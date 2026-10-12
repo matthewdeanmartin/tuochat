@@ -23,14 +23,14 @@ from tuochat.self_pkg_mgmt.report import Report, VersionInfo, Vulnerability
 
 __all__ = [
     "Host",
-    "TuochatHost",
-    "default_host",
     "Report",
-    "Vulnerability",
+    "TuochatHost",
     "VersionInfo",
+    "Vulnerability",
     "check_for_updates",
+    "default_host",
     "run_audit",
     "self_check",
-    "tamper_check",
     "self_upgrade",
+    "tamper_check",
 ]

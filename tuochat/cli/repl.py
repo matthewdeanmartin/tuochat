@@ -12,7 +12,7 @@ import signal
 import subprocess
 import sys
 from collections.abc import Sequence
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -143,8 +143,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="tuochat",
         description="GitLab Duo Chat client with local conversation tools",
         epilog=(
-            "Many REPL slash commands also have top-level equivalents. "
-            "Use `tuochat convo ...`, `tuochat archive ...`, `tuochat context ...`, and `tuochat headless ...`."
+            "Many REPL slash commands also have top-level equivalents. Use `tuochat convo ...`, `tuochat archive ...`, `tuochat context ...`, and `tuochat headless ...`."
         ),
     )
     parser.add_argument(
@@ -389,10 +388,11 @@ def load_config_with_cli_overrides(config_path: Path | str | GlobalOptions | Non
     """Load config from the requested path or default locations."""
     from tuochat.logging_config import setup_logging
 
-    if isinstance(config_path, GlobalOptions):
-        global_options = config_path
-    else:
-        global_options = GlobalOptions(config_path=Path(config_path) if config_path else None)
+    global_options = (
+        config_path
+        if isinstance(config_path, GlobalOptions)
+        else GlobalOptions(config_path=Path(config_path) if config_path else None)
+    )
 
     cfg = load_config(global_options.config_path)
     cfg = bootstrap.apply_global_overrides(cfg, global_options)
@@ -435,7 +435,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 def week_start_iso() -> str:
     """Return the ISO timestamp for the most recent Sunday 00:00:00 UTC."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     # weekday(): Mon=0 … Sun=6.  We want the preceding Sunday.
     days_since_sunday = (now.weekday() + 1) % 7
     sunday = now.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=days_since_sunday)
@@ -549,7 +549,7 @@ def normalize_command_candidate(raw_input: str) -> str:
 
 def expiration_cutoff_iso(expiration_days: int) -> str:
     """Return the ISO timestamp cutoff for expired conversations."""
-    cutoff = datetime.now(timezone.utc) - timedelta(days=expiration_days)
+    cutoff = datetime.now(UTC) - timedelta(days=expiration_days)
     return cutoff.isoformat()
 
 
@@ -1100,9 +1100,7 @@ def handle_slash_command(raw_input: str, state: ReplState) -> tuple[str | None, 
         state.custom_candidates = candidates
         if not candidates:
             print(
-                "No custom instruction files found in "
-                f"{state.cfg.custom_instructions_dir}, {bundled_custom_instructions_dir()}, "
-                f"or the workspace custom-instruction roots under {Path.cwd()}.",
+                f"No custom instruction files found in {state.cfg.custom_instructions_dir}, {bundled_custom_instructions_dir()}, or the workspace custom-instruction roots under {Path.cwd()}.",
                 file=sys.stderr,
             )
             return None, False
@@ -1126,7 +1124,7 @@ def handle_slash_command(raw_input: str, state: ReplState) -> tuple[str | None, 
             return None, False
         state.pending_custom_path = selected_path
         state.pending_custom_name = describe_custom_instruction_path(selected_path, state.cfg)
-        print("Selected custom instructions for the next new conversation: " f"{state.pending_custom_name}")
+        print(f"Selected custom instructions for the next new conversation: {state.pending_custom_name}")
         return None, False
 
     if command in ("/files", "/dir", "/ls"):
@@ -1280,11 +1278,7 @@ def handle_slash_command(raw_input: str, state: ReplState) -> tuple[str | None, 
             return None, False
 
         label = found_recipe.display_name
-        payload = (
-            f"Recipe attachment: {label}\n"
-            f"({len(match.matched_paths)} files, ~{match.estimated_tokens:,} tokens)\n\n"
-            f"{match.rendered}"
-        )
+        payload = f"Recipe attachment: {label}\n({len(match.matched_paths)} files, ~{match.estimated_tokens:,} tokens)\n\n{match.rendered}"
         queue_attachment(state, Path(f"[recipe] {label}"), payload)
         print(f"Queued recipe '{label}' for next request.")
         return None, False
@@ -1691,8 +1685,7 @@ def handle_slash_command(raw_input: str, state: ReplState) -> tuple[str | None, 
         if not candidates:
             print(
                 (
-                    f"No skill files found in {state.cfg.skills_dir}, "
-                    f"{bundled_skills_dir()}, or the workspace skill roots under {Path.cwd()}."
+                    f"No skill files found in {state.cfg.skills_dir}, {bundled_skills_dir()}, or the workspace skill roots under {Path.cwd()}."
                 ),
                 file=sys.stderr,
             )
@@ -1729,8 +1722,7 @@ def handle_slash_command(raw_input: str, state: ReplState) -> tuple[str | None, 
         if not candidates:
             print(
                 (
-                    f"No template files found in {state.cfg.templates_dir}, "
-                    f"{bundled_templates_dir()}, or the workspace template roots under {Path.cwd()}."
+                    f"No template files found in {state.cfg.templates_dir}, {bundled_templates_dir()}, or the workspace template roots under {Path.cwd()}."
                 ),
                 file=sys.stderr,
             )
@@ -2569,32 +2561,32 @@ def cmd_export(cfg: TuochatConfig, args: Any) -> int:
 
 __all__ = [
     "build_parser",
-    "main",
-    "week_start_iso",
+    "cmd_chat",
     "cmd_config",
+    "cmd_export",
+    "cmd_gui",
+    "cmd_history",
     "cmd_init",
-    "is_exit_command",
-    "normalize_command_candidate",
-    "expiration_cutoff_iso",
-    "maybe_prune_expired_conversations",
-    "nuke_targets",
+    "cmd_resume",
+    "cmd_search",
     "delete_path",
     "execute_pending_nuke",
+    "expiration_cutoff_iso",
     "format_included_file",
-    "print_help_section",
+    "handle_slash_command",
+    "is_exit_command",
+    "main",
+    "maybe_prune_expired_conversations",
+    "normalize_command_candidate",
+    "nuke_targets",
+    "pick_conversation_id",
     "print_help",
     "print_help_menu",
     "print_help_menu_section",
-    "resolve_help_topic",
-    "handle_slash_command",
+    "print_help_section",
     "process_repl_submission",
-    "cmd_chat",
-    "cmd_gui",
-    "cmd_history",
-    "resolve_conversation_id",
     "resolve_archived_conversation_id",
-    "pick_conversation_id",
-    "cmd_resume",
-    "cmd_search",
-    "cmd_export",
+    "resolve_conversation_id",
+    "resolve_help_topic",
+    "week_start_iso",
 ]

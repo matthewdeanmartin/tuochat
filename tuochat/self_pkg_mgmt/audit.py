@@ -6,7 +6,7 @@ import json
 import shutil
 import subprocess  # noqa: S404
 import sys
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from tuochat.self_pkg_mgmt.report import Vulnerability
 
@@ -95,7 +95,7 @@ def parse_safety(stdout: str) -> list[Vulnerability]:
     return findings
 
 
-AuditRunner = Callable[[], tuple[list[Vulnerability], Optional[str]]]
+AuditRunner = Callable[[], tuple[list[Vulnerability], str | None]]
 
 
 def runner_pip_audit() -> tuple[list[Vulnerability], str | None]:

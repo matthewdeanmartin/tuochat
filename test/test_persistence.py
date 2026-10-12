@@ -330,7 +330,7 @@ class TestNormalizeEscapedFences:
         """Simulates what Duo emitted: first block escaped, second normal."""
         from tuochat.patterns import FENCED_BLOCK_RE
 
-        text = "` ` `python password_manager.py\nfix1\n```\n\n" "```python test_password_manager.py\nfix2\n```"
+        text = "` ` `python password_manager.py\nfix1\n```\n\n```python test_password_manager.py\nfix2\n```"
         normalized = self.normalize(text)
         matches = list(FENCED_BLOCK_RE.finditer(normalized))
         assert len(matches) == 2

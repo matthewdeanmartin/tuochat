@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import io
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -34,8 +34,8 @@ def humanize_date(iso_str: str | None) -> str:
     try:
         dt = datetime.fromisoformat(iso_str)
         if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        now = datetime.now(timezone.utc)
+            dt = dt.replace(tzinfo=UTC)
+        now = datetime.now(UTC)
         delta = now - dt
         seconds = int(delta.total_seconds())
         if seconds < 0:

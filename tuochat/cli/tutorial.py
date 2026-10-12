@@ -221,13 +221,13 @@ def run_tutorial(state: ReplState, argument: str = "") -> None:
 
 
 __all__ = [
-    "tutorial_lesson_aliases",
-    "prompt_tutorial_continue",
-    "run_multiline_tutorial_practice",
-    "run_eliza_tutorial_practice",
-    "print_tutorial_picker",
-    "resolve_tutorial_lesson",
-    "print_tutorial_lesson",
     "persist_tutorial_completed",
+    "print_tutorial_lesson",
+    "print_tutorial_picker",
+    "prompt_tutorial_continue",
+    "resolve_tutorial_lesson",
+    "run_eliza_tutorial_practice",
+    "run_multiline_tutorial_practice",
     "run_tutorial",
+    "tutorial_lesson_aliases",
 ]

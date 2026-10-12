@@ -80,8 +80,7 @@ def check_url_safety(url: str, cfg: WebAttachConfig) -> None:
     allowed_ports = set(cfg.allowed_ports) if cfg.allowed_ports else DEFAULT_ALLOWED_PORTS
     if port not in allowed_ports:
         raise WebAttachError(
-            f"Port {port} is not in the allowed list {sorted(allowed_ports)}. "
-            "Change web_attach.allowed_ports in config to permit it."
+            f"Port {port} is not in the allowed list {sorted(allowed_ports)}. Change web_attach.allowed_ports in config to permit it."
         )
 
     if cfg.public_ip_only:
@@ -203,8 +202,7 @@ def fetch_url(url: str, cfg: WebAttachConfig) -> FetchResult:
         if content_type not in ACCEPTED_CONTENT_TYPES:
             response.close()
             raise WebAttachError(
-                f"Content-Type {content_type!r} is not supported. "
-                f"Only {sorted(ACCEPTED_CONTENT_TYPES)} are accepted."
+                f"Content-Type {content_type!r} is not supported. Only {sorted(ACCEPTED_CONTENT_TYPES)} are accepted."
             )
 
         try:

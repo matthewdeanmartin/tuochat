@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -126,13 +126,13 @@ def test_parse_latest_version_basic():
     version, published = parse_latest_version(TUOCHAT_FIXTURE)
     assert version == "0.4.0"
     assert published is not None
-    assert published == datetime(2026, 4, 1, 8, 0, 0, tzinfo=timezone.utc)
+    assert published == datetime(2026, 4, 1, 8, 0, 0, tzinfo=UTC)
 
 
 def test_parse_latest_version_picks_earliest_file():
     version, published = parse_latest_version(MULTI_FILE_FIXTURE)
     assert version == "2.0.0"
-    assert published == datetime(2026, 3, 15, 9, 0, 0, tzinfo=timezone.utc)
+    assert published == datetime(2026, 3, 15, 9, 0, 0, tzinfo=UTC)
 
 
 def test_parse_latest_version_no_release_files():
@@ -161,7 +161,7 @@ def test_parse_latest_version_fallback_upload_time():
 
 
 def test_parse_latest_version_published_is_utc_aware():
-    version, published = parse_latest_version(TUOCHAT_FIXTURE)
+    _version, published = parse_latest_version(TUOCHAT_FIXTURE)
     assert published is not None
     assert published.tzinfo is not None
 
@@ -184,7 +184,7 @@ def test_parse_latest_version_bad_upload_time_skipped():
     }
     version, published = parse_latest_version(payload)
     assert version == "1.0"
-    assert published == datetime(2026, 5, 1, tzinfo=timezone.utc)
+    assert published == datetime(2026, 5, 1, tzinfo=UTC)
 
 
 # ---------------------------------------------------------------------------

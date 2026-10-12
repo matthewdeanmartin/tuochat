@@ -5,11 +5,11 @@ from __future__ import annotations
 import importlib
 import os
 import re
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from tuochat.constants import (
     ARCHIVE_ID_MARKER,
@@ -198,7 +198,7 @@ def parse_iso_datetime(value: str | None) -> datetime:
             return datetime.fromisoformat(value)
         except ValueError:
             pass
-    return datetime.now(timezone.utc)
+    return datetime.now(UTC)
 
 
 def archive_date_prefix(conv: Conversation) -> str:
@@ -604,7 +604,7 @@ def initialize_bagit_archive(bagit_module, archive_dir: Path, bag_info: dict[str
         os.chdir(old_dir)
 
     archive_info = dict(bag_info)
-    archive_info.setdefault("Bagging-Date", datetime.now(timezone.utc).strftime("%Y-%m-%d"))
+    archive_info.setdefault("Bagging-Date", datetime.now(UTC).strftime("%Y-%m-%d"))
     version = getattr(bagit_module, "VERSION", "unknown")
     project_url = getattr(bagit_module, "PROJECT_URL", "https://pypi.org/project/bagit/")
     archive_info.setdefault("Bag-Software-Agent", f"bagit.py v{version} <{project_url}>")
@@ -885,7 +885,7 @@ def render_conversation_markdown(
         lines.append(f"- Retention: {retention_years} year{'s' if retention_years != 1 else ''}")
     elif retention_label:
         lines.append(f"- Retention: {retention_label}")
-    lines.append(f"- Date: `{datetime.now(timezone.utc).strftime('%Y-%m-%d')}`")
+    lines.append(f"- Date: `{datetime.now(UTC).strftime('%Y-%m-%d')}`")
     lines.append("")
     if conv.system_prompt:
         lines.extend(["## System Prompt", "", conv.system_prompt, ""])

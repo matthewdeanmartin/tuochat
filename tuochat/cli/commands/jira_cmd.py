@@ -35,8 +35,7 @@ def get_or_build_client(state: ReplState):
     cfg = state.cfg
     if not cfg.jira.host or not cfg.jira.token:
         print(
-            "Jira is not configured.  Add [jira] host/token to your config or set\n"
-            "TUOCHAT_JIRA_HOST and TUOCHAT_JIRA_TOKEN environment variables.",
+            "Jira is not configured.  Add [jira] host/token to your config or set\nTUOCHAT_JIRA_HOST and TUOCHAT_JIRA_TOKEN environment variables.",
             file=sys.stderr,
         )
         return None

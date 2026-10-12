@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from tuochat.self_pkg_mgmt import api
@@ -51,7 +51,7 @@ def test_build_version_info_no_cache_entry(tmp_path):
 
 def test_build_version_info_with_cache_entry(tmp_path):
     cache = Cache.load(tmp_path)
-    old = datetime(2025, 1, 1, tzinfo=timezone.utc)
+    old = datetime(2025, 1, 1, tzinfo=UTC)
     cache.put_package("mypkg", "2.0", old)
     info = api.build_version_info("mypkg", "1.0", cache)
     assert info.latest == "2.0"
@@ -80,7 +80,7 @@ def test_build_version_info_cooloff(tmp_path):
     from datetime import timedelta
 
     cache = Cache.load(tmp_path)
-    recent = datetime.now(timezone.utc) - timedelta(days=1)
+    recent = datetime.now(UTC) - timedelta(days=1)
     cache.put_package("mypkg", "2.0", recent)
     info = api.build_version_info("mypkg", "1.0", cache)
     assert info.is_in_cooloff is True
@@ -245,7 +245,7 @@ def test_check_for_updates_cooloff_note(tmp_path, monkeypatch):
     monkeypatch.setattr(api.installed, "direct_dependencies", lambda name: [])
 
     cache = Cache.load(tmp_path)
-    recent = datetime.now(timezone.utc) - timedelta(days=1)
+    recent = datetime.now(UTC) - timedelta(days=1)
     cache.put_package("fakepkg", "2.0", recent)
     cache.save()
 

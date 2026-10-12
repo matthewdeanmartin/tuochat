@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any
 
 from .core import InteractionContext
 from .matching import normalize_text

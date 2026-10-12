@@ -8,7 +8,7 @@ import ssl
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 PYPI_HOST = "pypi.org"
 PYPI_URL = "https://pypi.org/pypi/{name}/json"
@@ -86,7 +86,7 @@ def parse_latest_version(payload: dict) -> tuple[str, datetime | None]:
             except ValueError:
                 continue
             if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
+                dt = dt.replace(tzinfo=UTC)
             timestamps.append(dt)
         if timestamps:
             published = min(timestamps)

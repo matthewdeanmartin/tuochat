@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import UTC
 from typing import TYPE_CHECKING, Any
 
 from tuochat.cli.rendering import print_doctor, print_report_value
@@ -20,9 +21,9 @@ if TYPE_CHECKING:
 
 def week_start_iso() -> str:
     """Return the ISO timestamp for the most recent Sunday 00:00:00 UTC."""
-    from datetime import datetime, timedelta, timezone
+    from datetime import datetime, timedelta
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     days_since_sunday = (now.weekday() + 1) % 7
     sunday = now.replace(hour=0, minute=0, second=0, microsecond=0) - timedelta(days=days_since_sunday)
     return sunday.isoformat()
@@ -182,13 +183,7 @@ def print_observability_text(rollups: list[DailyRollup]) -> None:
 
     # Table 1: Completed response performance
     print("Completed response performance (last 30 days):")
-    header = (
-        f"{'day':<12} {'completed':>9} "
-        f"{'avg_ttfb':>9} {'med_ttfb':>9} {'p95_ttfb':>9} {'max_ttfb':>9} "
-        f"{'avg_ms/tok':>10} {'p95_ms/tok':>10} "
-        f"{'avg_total':>10} {'p95_total':>10} "
-        f"{'avg_req_tok':>11} {'avg_res_tok':>11} {'max_res_tok':>11}"
-    )
+    header = f"{'day':<12} {'completed':>9} {'avg_ttfb':>9} {'med_ttfb':>9} {'p95_ttfb':>9} {'max_ttfb':>9} {'avg_ms/tok':>10} {'p95_ms/tok':>10} {'avg_total':>10} {'p95_total':>10} {'avg_req_tok':>11} {'avg_res_tok':>11} {'max_res_tok':>11}"
     print(header)
     print("-" * len(header))
     for r in rollups:

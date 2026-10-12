@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from tuochat.self_pkg_mgmt.cache import COOLOFF, Cache, format_iso, parse_iso
 
@@ -27,7 +27,7 @@ def test_parse_iso_plus00():
 def test_parse_iso_naive_gets_utc():
     dt = parse_iso("2026-04-08T12:00:00")
     assert dt is not None
-    assert dt.tzinfo == timezone.utc
+    assert dt.tzinfo == UTC
 
 
 def test_parse_iso_none():
@@ -43,7 +43,7 @@ def test_parse_iso_bad():
 
 
 def test_format_iso_roundtrip():
-    dt = datetime(2026, 4, 8, 12, 0, 0, tzinfo=timezone.utc)
+    dt = datetime(2026, 4, 8, 12, 0, 0, tzinfo=UTC)
     result = format_iso(dt)
     assert result.endswith("Z")
     assert parse_iso(result) == dt
@@ -101,7 +101,7 @@ def test_save_creates_file(tmp_path):
 
 def test_save_roundtrip(tmp_path):
     cache = Cache.load(tmp_path)
-    cache.put_package("mylib", "2.3.4", datetime(2026, 1, 1, tzinfo=timezone.utc))
+    cache.put_package("mylib", "2.3.4", datetime(2026, 1, 1, tzinfo=UTC))
     cache.save()
 
     cache2 = Cache.load(tmp_path)
@@ -122,7 +122,7 @@ def test_is_fresh_new_entry(tmp_path):
 def test_is_fresh_old_entry(tmp_path, monkeypatch):
     cache = Cache.load(tmp_path)
     # Plant a fetched timestamp 25 hours ago
-    old_time = datetime.now(timezone.utc) - timedelta(hours=25)
+    old_time = datetime.now(UTC) - timedelta(hours=25)
     cache.data.setdefault("pypi", {})["stale"] = {
         "latest": "1.0",
         "published": None,
@@ -151,7 +151,7 @@ def test_is_fresh_custom_ttl(tmp_path):
 def test_cooloff_recent_package(tmp_path):
     cache = Cache.load(tmp_path)
     # published 1 day ago → inside 14-day cooloff
-    recent = datetime.now(timezone.utc) - timedelta(days=1)
+    recent = datetime.now(UTC) - timedelta(days=1)
     cache.put_package("newpkg", "0.1", recent)
     assert cache.is_in_cooloff("newpkg") is True
 
@@ -159,7 +159,7 @@ def test_cooloff_recent_package(tmp_path):
 def test_cooloff_old_package(tmp_path):
     cache = Cache.load(tmp_path)
     # published 20 days ago → outside cooloff
-    old = datetime.now(timezone.utc) - timedelta(days=20)
+    old = datetime.now(UTC) - timedelta(days=20)
     cache.put_package("oldpkg", "1.0", old)
     assert cache.is_in_cooloff("oldpkg") is False
 
@@ -167,7 +167,7 @@ def test_cooloff_old_package(tmp_path):
 def test_cooloff_boundary_exactly_14_days(tmp_path):
     cache = Cache.load(tmp_path)
     # exactly at boundary → just outside cooloff (age == COOLOFF is not < COOLOFF)
-    boundary = datetime.now(timezone.utc) - COOLOFF
+    boundary = datetime.now(UTC) - COOLOFF
     cache.put_package("boundary", "1.0", boundary)
     assert cache.is_in_cooloff("boundary") is False
 
@@ -201,15 +201,15 @@ def test_snooze_not_snoozed(tmp_path):
 
 def test_snooze_expired(tmp_path):
     cache = Cache.load(tmp_path)
-    past = datetime.now(timezone.utc) - timedelta(days=1)
+    past = datetime.now(UTC) - timedelta(days=1)
     cache.data.setdefault("suppressed_until", {})["tuochat==0.5.0"] = format_iso(past)
     assert cache.is_snoozed("tuochat==0.5.0") is False
 
 
 def test_prune_snoozes_removes_expired(tmp_path):
     cache = Cache.load(tmp_path)
-    past = datetime.now(timezone.utc) - timedelta(days=1)
-    future = datetime.now(timezone.utc) + timedelta(days=7)
+    past = datetime.now(UTC) - timedelta(days=1)
+    future = datetime.now(UTC) + timedelta(days=7)
     cache.data["suppressed_until"] = {
         "old==1.0": format_iso(past),
         "current==2.0": format_iso(future),
@@ -242,7 +242,7 @@ def test_audit_is_fresh_missing(tmp_path):
 
 def test_audit_is_fresh_stale(tmp_path):
     cache = Cache.load(tmp_path)
-    old = datetime.now(timezone.utc) - timedelta(hours=25)
+    old = datetime.now(UTC) - timedelta(hours=25)
     cache.data["last_audit_utc"] = format_iso(old)
     assert cache.audit_is_fresh() is False
 

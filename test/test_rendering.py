@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -45,7 +45,7 @@ def test_screen_transition_and_number_label(capsys):
 
 
 def test_print_startup_banner_includes_runtime_details(monkeypatch, capsys):
-    monkeypatch.setattr(rendering, "local_now", lambda: datetime(2025, 1, 2, 3, 4, 5, tzinfo=timezone.utc))
+    monkeypatch.setattr(rendering, "local_now", lambda: datetime(2025, 1, 2, 3, 4, 5, tzinfo=UTC))
     monkeypatch.setattr(rendering, "python_version_string", lambda: "3.14.0")
 
     rendering.print_startup_banner()

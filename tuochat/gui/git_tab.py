@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import tkinter as tk
+from collections.abc import Callable
 from pathlib import Path
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from tuochat.git_info import GitStatus, get_git_status, run_git
 
@@ -201,9 +202,7 @@ class GitStatusTab:
         self.status_label.configure(text=f"  {branch_str}  —  {status.root}", fg=COLOR_NEUTRAL)
 
         if status.dirty:
-            banner = (
-                f"  DIRTY  —  {status.staged} staged,  " f"{status.unstaged} unstaged,  {status.untracked} untracked"
-            )
+            banner = f"  DIRTY  —  {status.staged} staged,  {status.unstaged} unstaged,  {status.untracked} untracked"
             self.dirty_banner.configure(text=banner, fg=COLOR_DIRTY, bg="#fef2f2")
         else:
             self.dirty_banner.configure(text="  Working tree is clean", fg=COLOR_CLEAN, bg="#f0fdf4")

@@ -7,6 +7,7 @@ No external dependencies — uses socket + ssl.
 from __future__ import annotations
 
 import base64
+import contextlib
 import logging
 import os
 import socket
@@ -176,7 +177,7 @@ class WebSocketClient:
 
             try:
                 header = self.recv_exact(2)
-            except socket.timeout:
+            except TimeoutError:
                 raise  # let caller handle short-timeout polling
             except (ConnectionError, OSError):
                 return None
@@ -225,10 +226,8 @@ class WebSocketClient:
                 self.sock.sendall(b"\x88\x80" + mask)
             except OSError:
                 pass
-            try:
+            with contextlib.suppress(OSError):
                 self.sock.close()
-            except OSError:
-                pass
             self.sock = None
             self.recv_buffer.clear()
             logger.debug("WebSocket closed")
@@ -278,8 +277,6 @@ def create_ssl_context() -> ssl.SSLContext:
     ctx = ssl.create_default_context()
     tls_version = getattr(ssl, "TLSVersion", None)
     if tls_version is not None and hasattr(tls_version, "TLSv1_3"):
-        try:
+        with contextlib.suppress(AttributeError, ValueError):
             ctx.maximum_version = tls_version.TLSv1_3
-        except (AttributeError, ValueError):
-            pass
     return ctx

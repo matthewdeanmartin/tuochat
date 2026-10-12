@@ -17,11 +17,13 @@ Blind mode with "auto" upgrades to "paged" automatically.
 # ruff: noqa: E402,F401,F403,F811,F821,B010
 from __future__ import annotations
 
+import contextlib
 import glob
 import logging
 import re
 import sys
 from collections.abc import Sequence
+from datetime import UTC
 from pathlib import Path
 from typing import Any, TypeVar, cast
 
@@ -65,7 +67,7 @@ def conversation_modified_on_disk(conv: Conversation, cfg: TuochatConfig) -> boo
             return False
         mtime = md.stat().st_mtime
         db_dt = datetime.fromisoformat(db_time.replace("Z", "+00:00"))
-        file_dt = datetime.fromtimestamp(mtime, tz=timezone.utc)
+        file_dt = datetime.fromtimestamp(mtime, tz=UTC)
         return file_dt > db_dt
     except Exception:
         return False
@@ -217,10 +219,7 @@ def pick_paged(
         for idx, (label, _) in enumerate(chunk, start=start + 1):
             print(f"{number_label(idx, blind_mode=blind)} {label}")
 
-        if blind:
-            nav_hint = "number, 'n' next, 'p' prev, 'q' cancel"
-        else:
-            nav_hint = "number, n/p to page, q to cancel"
+        nav_hint = "number, 'n' next, 'p' prev, 'q' cancel" if blind else "number, n/p to page, q to cancel"
         raw = prompt(f"{prompt_text} [{nav_hint}]: ").strip().lower()
 
         if raw in {"q", "quit", "cancel", ""}:
@@ -270,7 +269,7 @@ def pick_prefilter_then_page(
 
 
 ASK_ONE_HELP = (
-    "Commands: Enter or 'y' to select, 'n' next, 'p' prev, " "'[text]' to filter (use square brackets), 'q' to cancel"
+    "Commands: Enter or 'y' to select, 'n' next, 'p' prev, '[text]' to filter (use square brackets), 'q' to cancel"
 )
 
 
@@ -663,18 +662,12 @@ def resolve_custom_instruction_path(argument: str, *, cfg, candidates: list[Path
             candidate.name,
             describe_custom_instruction_path(candidate, cfg),
         }
-        try:
+        with contextlib.suppress(ValueError):
             aliases.add(candidate.relative_to(cfg.custom_instructions_dir).as_posix())
-        except ValueError:
-            pass
-        try:
+        with contextlib.suppress(ValueError):
             aliases.add(candidate.relative_to(bundled_custom_instructions_dir()).as_posix())
-        except ValueError:
-            pass
-        try:
+        with contextlib.suppress(ValueError):
             aliases.add(candidate.relative_to(Path.cwd()).as_posix())
-        except ValueError:
-            pass
         if normalized in aliases:
             return candidate
     return None
@@ -715,28 +708,28 @@ def resolve_template_path(argument: str, *, cfg, candidates: list[Path] | None) 
 
 
 __all__ = [
+    "effective_picker_mode",
+    "has_glob_chars",
+    "pick_archived_candidate",
+    "pick_custom_instruction",
     "pick_from_list",
+    "pick_resume_candidate",
     "pick_skill",
     "pick_template",
-    "pick_custom_instruction",
-    "pick_resume_candidate",
-    "pick_archived_candidate",
     "picker_cfg",
-    "effective_picker_mode",
+    "print_archived_candidates",
+    "print_custom_instruction_picker",
     # legacy display-only helpers
     "print_picker",
+    "print_resume_candidates",
+    "print_search_candidates",
     "print_skill_picker",
     "print_template_picker",
-    "print_custom_instruction_picker",
-    "print_resume_candidates",
-    "print_archived_candidates",
-    "run_conversation_search",
-    "print_search_candidates",
+    "resolve_custom_instruction_path",
     "resolve_picker_path",
     "resolve_skill_path",
-    "resolve_custom_instruction_path",
     "resolve_template_path",
+    "run_conversation_search",
     "select_include_candidate",
-    "has_glob_chars",
     "select_include_candidates",
 ]

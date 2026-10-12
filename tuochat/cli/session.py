@@ -10,9 +10,10 @@ import subprocess  # nosec: B404
 import sys
 import threading
 import time
+from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from tuochat.cli.models import ReplState
 from tuochat.cli.prompts import prompt_input
@@ -145,11 +146,7 @@ def no_stream_mode_enabled(cfg: TuochatConfig) -> bool:
 
 def no_stream_hold_message() -> str:
     """Explain why non-streaming mode is currently feature-flagged off."""
-    return (
-        "Non-streaming mode is disabled unless chat.enable_no_stream = true. "
-        "There may be a real 5000-token truncation bug here, or it may be a rarer backend behavior we do not "
-        "fully understand yet, but it is not worth the risk right now."
-    )
+    return "Non-streaming mode is disabled unless chat.enable_no_stream = true. There may be a real 5000-token truncation bug here, or it may be a rarer backend behavior we do not fully understand yet, but it is not worth the risk right now."
 
 
 def resolve_streaming_enabled(cfg: TuochatConfig, *, no_stream_requested: bool = False) -> bool:
@@ -411,10 +408,7 @@ def build_openrouter_provider(cfg: TuochatConfig, *, model_override: str | None 
             "OpenRouter API key is not configured. Set OPENROUTER_API_KEY or run `tuochat openrouter login`."
         )
     models: list[str]
-    if model_override:
-        models = [model_override]
-    else:
-        models = cfg.openrouter.effective_models()
+    models = [model_override] if model_override else cfg.openrouter.effective_models()
     if not models:
         raise OpenRouterAPIError("No OpenRouter model configured. Set OPENROUTER_MODEL or OPENROUTER_MODELS.")
     return OpenRouterProvider(
@@ -1423,52 +1417,52 @@ def send_chat_turn(state: ReplState, user_input: str, *, original_handler=None, 
 
 __all__ = [
     "ReplState",
+    "apply_git_repo_write_here_default",
+    "approve_writes_enabled",
     "blind_mode_enabled",
-    "python_version_string",
+    "build_openrouter_provider",
+    "build_outbound_input",
+    "build_provider",
+    "build_resumed_context_block",
+    "build_store",
+    "conversation_history_for_openrouter",
+    "copy_to_clipboard",
+    "cwd_is_filesystem_root",
+    "emit_long_request_notification",
+    "extract_template_message_metadata",
+    "handle_server_context_command",
+    "is_timeout_error",
+    "latest_assistant_message",
     "local_now",
-    "sync_conversation_artifacts",
     "no_stream_hold_message",
     "no_stream_mode_enabled",
-    "resolve_streaming_enabled",
-    "open_path",
-    "emit_long_request_notification",
-    "start_long_request_notifier",
-    "start_dot_timer",
-    "write_here_mode_enabled",
-    "approve_writes_enabled",
-    "cwd_is_filesystem_root",
-    "apply_git_repo_write_here_default",
-    "set_session_write_here_mode",
-    "set_session_approve_writes",
-    "print_write_here_help",
-    "print_approve_writes_help",
-    "toggle_write_here_mode",
-    "toggle_approve_writes",
-    "prompt_write_here_approval",
-    "record_log_event",
-    "provider_timeout_summary",
-    "is_timeout_error",
-    "build_openrouter_provider",
-    "build_provider",
-    "conversation_history_for_openrouter",
-    "persist_chat_preferences",
-    "build_store",
     "no_write_enabled",
+    "open_path",
+    "persist_chat_preferences",
+    "print_approve_writes_help",
     "print_no_write_help",
+    "print_write_here_help",
+    "prompt_write_here_approval",
+    "provider_for_attempt",
+    "provider_timeout_summary",
+    "python_version_string",
+    "record_log_event",
+    "reset_repl_state",
+    "resolve_streaming_enabled",
+    "retry_failure_action",
+    "send_chat_turn",
+    "set_session_approve_writes",
+    "set_session_write_here_mode",
+    "start_dot_timer",
+    "start_long_request_notifier",
+    "stream_safe_display_length",
+    "switch_to_conversation",
+    "sync_conversation_artifacts",
+    "toggle_approve_writes",
     "toggle_blind_mode",
     "toggle_no_write",
-    "validate_user_request",
-    "build_resumed_context_block",
-    "build_outbound_input",
-    "handle_server_context_command",
+    "toggle_write_here_mode",
     "update_saved_conversation_artifacts",
-    "latest_assistant_message",
-    "copy_to_clipboard",
-    "extract_template_message_metadata",
-    "reset_repl_state",
-    "switch_to_conversation",
-    "stream_safe_display_length",
-    "retry_failure_action",
-    "provider_for_attempt",
-    "send_chat_turn",
+    "validate_user_request",
+    "write_here_mode_enabled",
 ]

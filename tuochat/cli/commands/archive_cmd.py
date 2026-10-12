@@ -83,12 +83,10 @@ def run_bagit_update(
         return 0
     print(f"Updated BagIt metadata for {updated} conversation(s) in {archive_root}.")
     print(
-        "BagIt here is only a diagnostic aid: it writes hash and metadata files so you can later check whether "
-        "conversation archives changed since the last BagIt update."
+        "BagIt here is only a diagnostic aid: it writes hash and metadata files so you can later check whether conversation archives changed since the last BagIt update."
     )
     print(
-        "The practical purpose is to show when a person edited saved output, including renaming a `.check` file "
-        "to an executable extension before use."
+        "The practical purpose is to show when a person edited saved output, including renaming a `.check` file to an executable extension before use."
     )
     print("It is not intended to protect against malicious attack.")
     if skipped:
@@ -154,25 +152,20 @@ def run_bagit_check(
         return 0
     print(f"Checked BagIt status for {len(results)} conversation(s) in {archive_root}.")
     print(
-        "BagIt here is only a diagnostic aid: it checks whether conversation archive files changed since the "
-        "last time `/update-bagit` wrote hash and metadata files."
+        "BagIt here is only a diagnostic aid: it checks whether conversation archive files changed since the last time `/update-bagit` wrote hash and metadata files."
     )
     print(
-        "The practical purpose is to show when a person edited saved output, including renaming a `.check` file "
-        "to an executable extension before use."
+        "The practical purpose is to show when a person edited saved output, including renaming a `.check` file to an executable extension before use."
     )
     print("It is not intended to protect against malicious attack.")
     print(f"{len(valid)} archive(s) still validate.")
     if missing:
         print(
-            f"{len(missing)} archive(s) do not have BagIt files yet. Run `tuochat archive bagit-update` to write the "
-            "diagnostic hash and metadata files first."
+            f"{len(missing)} archive(s) do not have BagIt files yet. Run `tuochat archive bagit-update` to write the diagnostic hash and metadata files first."
         )
     if changed:
         print(
-            f"{len(changed)} archive(s) no longer validate. This suggests the archive was edited by a human, "
-            "including cases where a `.check` file was renamed or otherwise changed, and a human is now "
-            "responsible for its content."
+            f"{len(changed)} archive(s) no longer validate. This suggests the archive was edited by a human, including cases where a `.check` file was renamed or otherwise changed, and a human is now responsible for its content."
         )
         for result in changed:
             conversation = conversations.get(result.conversation_id)

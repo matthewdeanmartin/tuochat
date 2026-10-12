@@ -22,6 +22,7 @@ nesting issues.
 
 from __future__ import annotations
 
+import contextlib
 import logging
 import sys
 from dataclasses import dataclass, field
@@ -294,10 +295,8 @@ class ChildHandle:
         for fd_name in ("stdin_write_fd", "stdout_read_fd"):
             fd = getattr(self, fd_name, -1)
             if fd >= 0:
-                try:
+                with contextlib.suppress(OSError):
                     os.close(fd)
-                except OSError:
-                    pass
                 setattr(self, fd_name, -1)
 
         for handle_name in ("thread_handle", "process_handle", "job_handle"):
@@ -383,10 +382,8 @@ def spawn_isolated(
     except Exception:
         # Clean up on failure.
         for fd in (stdin_r_fd, stdin_w_fd, stdout_r_fd, stdout_w_fd):
-            try:
+            with contextlib.suppress(OSError):
                 os.close(fd)
-            except OSError:
-                pass
         try:
             win32api.CloseHandle(job)  # type: ignore[attr-defined]
         except Exception:
@@ -395,10 +392,8 @@ def spawn_isolated(
     finally:
         # Parent never uses the child-side pipe ends.
         for fd in (stdin_r_fd, stdout_w_fd):
-            try:
+            with contextlib.suppress(OSError):
                 os.close(fd)
-            except OSError:
-                pass
 
     restrictions = describe_restrictions(limits)
     logger.debug(

@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import threading
 import tkinter as tk
+from collections.abc import Callable
 from tkinter import messagebox, ttk
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from tuochat.config import TuochatConfig
@@ -258,9 +259,7 @@ class GitLabTab:
         pass_count = sum(1 for p in self.pipelines if p.get("status") in ("success", "passed"))
         fail_count = sum(1 for p in self.pipelines if p.get("status") == "failed")
         self.status_var.set(
-            f"Loaded: {len(self.mrs)} open MRs, {len(self.issues)} open issues, "
-            f"{len(self.pipelines)} recent pipelines "
-            f"({pass_count} passed, {fail_count} failed)"
+            f"Loaded: {len(self.mrs)} open MRs, {len(self.issues)} open issues, {len(self.pipelines)} recent pipelines ({pass_count} passed, {fail_count} failed)"
         )
 
     def populate_mrs(self) -> None:
@@ -374,13 +373,7 @@ class GitLabTab:
         if mr is None:
             return
         label = f"MR !{mr['iid']}: {mr['title']}"
-        body = (
-            f"## Merge Request !{mr['iid']}: {mr['title']}\n\n"
-            f"**Branch:** {mr.get('source_branch', '?')} → {mr.get('target_branch', '?')}\n"
-            f"**State:** {mr.get('state', '?')}\n"
-            f"**URL:** {mr.get('url', '')}\n\n"
-            f"### Description\n\n{mr.get('description', '(none)')}"
-        )
+        body = f"## Merge Request !{mr['iid']}: {mr['title']}\n\n**Branch:** {mr.get('source_branch', '?')} → {mr.get('target_branch', '?')}\n**State:** {mr.get('state', '?')}\n**URL:** {mr.get('url', '')}\n\n### Description\n\n{mr.get('description', '(none)')}"
         self.on_attach_context(label, body)
 
     def attach_issue_to_context(self) -> None:
@@ -395,10 +388,5 @@ class GitLabTab:
         if issue is None:
             return
         label = f"Issue #{issue['iid']}: {issue['title']}"
-        body = (
-            f"## Issue #{issue['iid']}: {issue['title']}\n\n"
-            f"**State:** {issue.get('state', '?')}\n"
-            f"**URL:** {issue.get('url', '')}\n\n"
-            f"### Description\n\n{issue.get('description', '(none)')}"
-        )
+        body = f"## Issue #{issue['iid']}: {issue['title']}\n\n**State:** {issue.get('state', '?')}\n**URL:** {issue.get('url', '')}\n\n### Description\n\n{issue.get('description', '(none)')}"
         self.on_attach_context(label, body)
