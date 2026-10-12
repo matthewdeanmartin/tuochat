@@ -45,6 +45,8 @@ jira = [
 ]
 openrouter = [
     "openrouter>=0.9.1; python_full_version >= '3.9.2'",
+    # The SDK uses HTTPX 0.x defaults and async APIs removed in 1.0 prereleases.
+    "httpx>=0.28.1,<1; python_full_version >= '3.9.2'",
 ]
 weak-sandbox = [
     "pywin32; platform_system == 'Windows'",
@@ -52,6 +54,7 @@ weak-sandbox = [
 fast = [
     "orjson",
     "rtoml; python_version < '3.15'",
+    "rtoml>=0.14.0; python_version >= '3.15'",
 ]
 antitamper = [
     "bagit",
@@ -66,8 +69,11 @@ all = [
     "python-gitlab>=6.5.0",
     "jira>=3.10.5; python_version >= '3.10'",
     "openrouter>=0.9.1; python_full_version >= '3.9.2'",
+    # The SDK uses HTTPX 0.x defaults and async APIs removed in 1.0 prereleases.
+    "httpx>=0.28.1,<1; python_full_version >= '3.9.2'",
     "orjson",
     "rtoml; python_version < '3.15'",
+    "rtoml>=0.14.0; python_version >= '3.15'",
     "bagit",
     "pip-audit",
     "mini-racer",

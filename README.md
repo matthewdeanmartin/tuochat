@@ -268,3 +268,10 @@ ChatGPT is trademark of OpenAI.
 Claud Code is trademark of Anthropic.
 
 Tuochat is not endorsed or related to GitLab, OpenAI, Anthropic or any person or organization.
+
+
+## Python 3.15 verification (2026-10-04)
+
+1343 tests pass / 4 skip on RC3 stable, prerelease-allowed dependencies, and 3.14.7. A separate RC3 environment without orjson or rtoml also passes 1343/4. Added HTTPX <1 to openrouter/all after a real SDK import failure; a fresh OpenRouter 0.10.8 + Pydantic 2.14.0b2/core 2.49.0 wheel environment starts and passes 49 focused tests. Stable OpenRouter remains Pydantic-wheel-blocked; dukpy/lupa extras are wheel-blocked even with prereleases. No live SDK requests were tested.
+
+Locks refreshed with `uv lock --upgrade`. Every dependency install used published wheels only in fresh environments; no source builds. Full developer groups still have wheel blockers, so unit-suite success does not certify the full developer setup. Evidence and limits: `C:/github/python315_batch6_2026-10-04.md`. Human operators review and file upstream bugs.
