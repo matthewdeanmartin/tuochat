@@ -1,7 +1,6 @@
 set dotenv-load := true
 
 LOGS_DIR := ".justlogs"
-STAMP_DIR := ".build_history"
 NO_COLOR_ENV := "NO_COLOR=1 CLICOLOR=0 FORCE_COLOR=0 PY_COLORS=0"
 
 venv := `if [ -z "${VIRTUAL_ENV-}" ]; then echo "uv run"; else echo ""; fi`
@@ -63,29 +62,26 @@ install-plugins:
     @echo "N/A"
 
 # Create the build stamp directory.
-init-build-history:
-    mkdir -p {{STAMP_DIR}}
-
 # Create and clear the parallel verification log directory.
 init-logs:
     mkdir -p {{LOGS_DIR}}
     rm -f {{LOGS_DIR}}/*.log {{LOGS_DIR}}/*.ok || true
 
 # Sort imports in-place.
-isort: uv-lock install-plugins init-build-history
+isort: uv-lock install-plugins
     @echo "Formatting imports"
     {{venv}} isort .
 
-black: uv-lock install-plugins init-build-history
+black: uv-lock install-plugins
     @echo "Formatting code"
     {{venv}} black tuochat
     {{venv}} black test
 
-ruff-fix: uv-lock install-plugins init-build-history
+ruff-fix: uv-lock install-plugins
     @echo "Auto-fixing with ruff"
     {{venv}} ruff check --fix .
 
-sync-metadata: uv-lock install-plugins init-build-history
+sync-metadata: uv-lock install-plugins
     @echo "Syncing generated metadata"
     {{venv}} metametameta pep621
 
