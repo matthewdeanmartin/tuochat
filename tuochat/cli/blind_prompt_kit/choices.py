@@ -75,7 +75,7 @@ class ChoiceInput(Generic[ValueT]):
         # coerce_choices() infers its type var as `ValueT | str` from the
         # Sequence[Choice[ValueT] | str] argument; the extra `str` arm is the
         # bare-string case it already normalizes into Choice[str].
-        self.choices = cast("list[Choice[ValueT] | Choice[str]]", coerce_choices(self.options))
+        self.choices = cast("list[Choice[ValueT] | Choice[str]]", coerce_choices(self.options))  # ty: ignore[redundant-cast]
 
     def run(self, context: InteractionContext) -> ValueT | str:
         """Run the picker."""
@@ -260,7 +260,7 @@ class MultiSelectInput(Generic[ValueT]):
         # coerce_choices() infers its type var as `ValueT | str` from the
         # Sequence[Choice[ValueT] | str] argument; the extra `str` arm is the
         # bare-string case it already normalizes into Choice[str].
-        self.choices = cast("list[Choice[ValueT] | Choice[str]]", coerce_choices(self.options))
+        self.choices = cast("list[Choice[ValueT] | Choice[str]]", coerce_choices(self.options))  # ty: ignore[redundant-cast]
 
     def run(self, context: InteractionContext) -> list[ValueT | str]:
         """Run the multi-select prompt."""
